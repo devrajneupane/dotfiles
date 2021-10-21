@@ -1,0 +1,1 @@
+/mnt/c/Users/LENOVO/.ipython/profile_default/ipython_config.py
