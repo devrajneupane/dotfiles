@@ -1,0 +1,1 @@
+/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/open_in_terminus.py
