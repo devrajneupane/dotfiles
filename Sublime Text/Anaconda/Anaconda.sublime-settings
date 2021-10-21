@@ -1,1 +1,22 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Anaconda.sublime-settings
+{
+    "python_interpreter": "D:\\Python\\miniconda3\\python.exe",
+    "swallow_startup_errors": true,
+    "pep8": false,
+    "auto_formatting": true,
+    "autoformat_ignore":
+    [
+        "E309",
+        "E501"
+    ],
+    "pep8_ignore":
+    [
+        "E309",
+        "E501"
+    ],
+    "anaconda_linter_underlines": true,
+    "anaconda_linter_mark_style": "none",
+    "display_signatures": false,
+    "disable_anaconda_completion": false,
+    "anaconda_gutter_theme": "retina",
+
+}

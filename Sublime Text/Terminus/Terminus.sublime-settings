@@ -1,1 +1,9 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Terminus.sublime-settings
+{
+    "theme": "user",
+    "user_theme_colors": {
+        "background": "#121A1E",
+        "foreground": "#989D91",
+        "selection": "#3E3E3E",
+    },
+    "256color": true,
+}

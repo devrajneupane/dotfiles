@@ -1,1 +1,12 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Default.sublime-commands
+[
+    {
+        "caption": "Terminus: Conda Enviroment",
+        "command": "terminus_exec",
+        "args"   : {
+            "shell_cmd": "conda activate && cmd",
+            "cwd": "${file_path:${folder}}",
+            "title": "Conda Environment"
+        }
+    }
+]
+

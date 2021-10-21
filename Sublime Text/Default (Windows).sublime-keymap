@@ -1,1 +1,48 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Default (Windows).sublime-keymap
+[
+	{ "keys": ["ctrl+\\"], "command": "toggle_side_bar" },
+	{ "keys": ["ctrl+shift+r"], "command": "reveal_in_side_bar" },
+	{ "keys": ["ctrl+alt+t"], "command": "terminus_open",
+		"args": {
+            "shell_cmd": "cmd /k conda activate",
+            "cwd": "${file_path:${folder}}",
+            "title": "Command Prompt(Conda)",
+        }
+    },
+	{ "keys": ["shift+backspace"], "command": "toggle_terminus_panel",
+		"args": {
+            "shell_cmd": "cmd /k conda activate",
+			"cwd": "${file_path:${folder}}",
+		}
+	},
+	{ "keys": ["ctrl+alt+z"], "command": "cmd"},
+	// { "keys": ["shift+escape"], "command": "show_panel",
+	//  "args": {
+	//  	"panel": "output.Terminus Build Results", "toggle": true,
+	//  },
+ //        "context": [
+ //            {"key": "terminus_view.exec_panel_exists", "operand": true},
+ //            {"key": "terminus_view.exec_panel_visible", "operand": false}
+ //        ]
+ //    },
+    { "keys": ["ctrl+shift+0"], "command": "reset_font_size" },
+    { "keys": ["ctrl+alt+b"], "command": "cancel_build" },
+    { "keys": ["ctrl+shift+o"], "command": "prompt_open_folder" },
+    {"keys": ["ctrl+shift+c"], "command": "copy_path_to_clipboard"},
+	 {"keys": ["ctrl+alt+w"], "command": "close_tabs"},
+	 {"command": "anaconda_get_lines", "keys": ["ctrl+alt+e"]},
+
+    {
+		"keys": ["alt+shift+6"],
+		"command": "set_layout",
+		"args":
+		{
+			"cols": [0.0, 0.55, 1.0],
+			"rows": [0.0, 0.5, 1.0],
+			"cells":
+			[
+				[0, 0, 1, 2], [1, 0, 2, 1],
+				[1, 1, 2, 2]
+			]
+		}
+	},
+]

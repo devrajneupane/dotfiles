@@ -1,1 +1,18 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Python-Conda.sublime-build
+{
+    "target": "terminus_exec",
+    "cancel": "terminus_cancel_build",
+    "focus": true,
+
+    "shell_cmd": "conda activate &&  python -u \"$file\"",
+    "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+    "selector": "source.python",
+
+    "env": {
+        "PATH": "$PATH;D:/Python/miniconda3/"
+    },
+
+    // "post_window_hooks": [
+    //     ["unselect_others"],
+    //     ["select_to_left"]
+    // ],
+}

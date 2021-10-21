@@ -1,1 +1,47 @@
-/mnt/c/Users/LENOVO/.condarc
+# ######################################################
+# ##              Channel Configuration               ##
+# ######################################################
+
+# # channels (sequence: primitive)
+# #   aliases: channel
+# #   env var string delimiter: ','
+# #   The list of conda channels to include for relevant operations.
+# #
+channels:
+  - conda-forge
+  - defaults
+ssl_verify: true
+
+# ######################################################
+# ##            Basic Conda Configuration             ##
+# ######################################################
+
+# # pkgs_dirs (sequence: primitive)
+# #   env var string delimiter: ','
+# #   directories in which package cache can be present
+# #   The list of directories where locally-available packages are linked
+# #   from at install time. Packages not locally available are downloaded
+# #   and extracted into the first writable directory.
+# #
+pkgs_dirs:
+  - D:\Python\miniconda3\pkgs
+
+# ######################################################
+# ##  Output, Prompt, and Flow Control Configuration  ##
+# ######################################################
+
+# # auto_activate_base (bool)
+# #   Automatically activate the base environment during shell
+# #   initialization.
+# # 
+auto_activate_base: true
+channel_priority: flexible
+show_channel_urls: true
+changeps1: true
+create_default_packages:
+##  - pip
+##  - scipy
+  - ipython
+repodata_threads: 2
+verify_threads: 3
+report_errors: false

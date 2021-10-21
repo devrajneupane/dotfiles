@@ -1,1 +1,17 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Side Bar.sublime-settings
+{
+	"statusbar_modified_time": true,
+	"statusbar_modified_time_format": "%A %b %d %h:%M:%S %Y",
+
+	"statusbar_file_size": true,
+
+	"confirm_before_deleting": false,
+
+	"confirm_before_permanently_deleting": true,
+
+	"new_files_relative_to_project_root": true,
+	"new_folders_relative_to_project_root": true,
+
+	"use_powershell": false,
+	// "use_command": "conda activate",
+
+}

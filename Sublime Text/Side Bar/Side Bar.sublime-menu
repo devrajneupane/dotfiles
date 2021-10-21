@@ -1,1 +1,21 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Side Bar.sublime-menu
+[
+    { "caption": "-", "id": "folder_commands" },
+
+    { 
+        "caption": "Open in Terminus (Tab)", 
+        "command": "open_in_terminus", 
+        "args": {
+            "panel": false,
+            "dirs": []
+        } 
+    },
+
+    { 
+        "caption": "Open in Terminus (Panel)", 
+        "command": "open_in_terminus", 
+        "args": {
+            "panel": true,
+            "dirs": []
+        } 
+    },
+]

@@ -1,1 +1,118 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Preferences.sublime-settings
+{
+
+	"theme": "Seti.sublime-theme",
+	"color_scheme": "Packages/1337 Color Scheme/1337.tmTheme",
+
+	// tabs
+	"seti_tabs_med":true,
+
+	// Scrollbar
+	"Seti_SB_med": true,
+	"Seti_lime_scrollbar": true,
+
+	"Seti_red_tabclose": true,
+
+	"Seti_teal_label": true,
+
+	"Seti_teal_statusbar": true,
+	"Seti_dark_fold_button": true,
+
+	//sidebar
+	//heading
+	"Seti_top_heading_anim": true,
+
+	"auto_hide_menu": true,
+	"always_show_minimap_viewport": true,
+	"auto_complete_commit_on_tab": true,
+	"auto_complete_with_fields": true,
+	"bold_folder_labels": true,
+	"caret_extra_bottom": 3,
+	"caret_extra_top": 3,
+	"caret_extra_width": 2,
+	"caret_style": "phase",
+	"close_windows_when_empty": false,
+	"copy_with_empty_selection": false,
+	"drag_text": true,
+	"enable_tab_scrolling": false,
+	"ensure_newline_at_eof_on_save": true,
+	"file_exclude_patterns":
+	[
+		"*.pyc",
+		"*.pyo",
+		"*.exe",
+		"*.dll",
+		"*.obj",
+		"*.o",
+		"*.a",
+		"*.lib",
+		"*.so",
+		"*.dylib",
+		"*.ncb",
+		"*.sdf",
+		"*.suo",
+		"*.pdb",
+		"*.idb",
+		".DS_Store",
+		"*.class",
+		"*.psd",
+	],
+	"font_face": "CaskaydiaCove Nerd Font",
+	"font_size": 12,
+	// "font_options": ["subpixel_antialias",],
+	"theme_font_options": ["subpixel_antialias"],
+	"highlight_line": true,
+	"highlight_modified_tabs": true,
+	"ignored_packages":
+	[
+		"ActionScript",
+		"AppleScript",
+		"ASP",
+		"D",
+		"Diff",
+		"Erlang",
+		"Graphviz",
+		"Groovy",
+		"HTML-CSS-JS Prettify",
+		"Lisp",
+		"Lua",
+		"OCaml",
+		"Rails",
+		"Ruby",
+		"Vintage",
+	],
+	"line_padding_top": 1,
+	"match_brackets_content": false,
+	"match_selection": false,
+	"match_tags": false,
+	"mini_diff": "auto",
+	"open_files_in_new_window": "never",
+	"overlay_scroll_bars": "enabled",
+	"preview_on_click": false,
+	"save_on_focus_lost": true,
+	"scroll_past_end": true,
+	"scroll_speed": 5.0,
+	"show_encoding": true,
+	"show_errors_inline": true,
+	"show_full_path": false,
+	"show_line_endings": false,
+	"translate_tabs_to_spaces": true,
+	"trim_trailing_white_space_on_save": "all",
+	"word_wrap": false,
+	"adaptive_dividers": true,
+	"hardware_acceleration": "opengl",
+	"indent_to_bracket": true,
+	"shift_tab_unindent": true,
+	"show_project_first": true,
+    "indent_guide_options":
+	[
+		"draw_active"
+	],
+	"new_window_settings":
+    {
+        "hide_open_files": true,
+        "show_tabs": true,
+        "side_bar_visible": true,
+        "status_bar_visible": true,
+    },
+    "use_simple_full_screen": true,
+}

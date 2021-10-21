@@ -1,1 +1,10 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Distraction Free.sublime-settings
+{
+
+    "line_numbers": true,
+    "gutter": true,
+    "draw_centered": true,
+    "wrap_width": 80,
+    "word_wrap": true,
+    "scroll_past_end": true
+
+}

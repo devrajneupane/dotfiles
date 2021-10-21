@@ -1,1 +1,22 @@
-/mnt/c/Users/LENOVO/AppData/Roaming/Sublime Text/Packages/User/Plain text.sublime-settings
+// These settings override both User and Default settings for the Plain text syntax
+{
+    "match_brackets": false,
+    "match_brackets_angle": false,
+    "match_brackets_braces": false,
+    "match_brackets_content": false,
+    "match_brackets_square": false,
+
+    // Set to true to insert spaces when tab is pressed
+    "translate_tabs_to_spaces": true,
+
+    // Adaptive theme only: controls if a custom or default title bar is used
+    "themed_title_bar": false,
+
+    // Display file encoding in the status bar
+    "show_encoding": true,
+
+    // Display line endings in the status bar
+    "show_line_endings": true,
+
+    "hardware_acceleration": "opengl",
+}
