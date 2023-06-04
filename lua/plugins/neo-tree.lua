@@ -19,10 +19,13 @@ return {
 	end,
 	opts = {
 		auto_clean_after_session_restore = true,
+		popup_border_style = "rounded",
+		open_files_do_not_replace_types = { "help", "terminal", "trouble", "qf" },
 		filesystem = {
 			bind_to_cwd = false,
 			follow_current_file = true,
 			hijack_netrw_behaviour = "open_current",
+            use_libuv_file_watcher=true,
 			filtered_items = {
 				visible = true, -- grey out dotfiles
 				hide_dotfiles = false,
@@ -30,9 +33,9 @@ return {
 		},
 		window = {
 			width = 30,
-			mappings = {
-				["<space>"] = false, -- disable space
-			},
+			-- mappings = {
+			-- 	["<space>"] = false, -- disable space
+			-- },
 		},
 		default_component_configs = {
 			indent = {
