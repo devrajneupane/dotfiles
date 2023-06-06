@@ -41,4 +41,17 @@ return {
         },
     },
 
+    -- Nerd Font Icons, Symbols & Emojis picker
+    {
+        "ziontee113/icon-picker.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        opts = {
+            disable_legacy_commands = true,
+        },
+        keys = {
+            { "<Leader>ip", cmd("IconPickerNormal"), desc = "icon picker" },
+            { "A-I", mode = { 'i' }, cmd("IconPickerInsert"), desc = "icon picker" },
+
+        },
+    },
 }
