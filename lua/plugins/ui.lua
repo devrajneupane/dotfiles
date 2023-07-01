@@ -1,6 +1,33 @@
 local cmd = require("utils").cmd
 return {
 	-- auto-resize windows
+
+    -- indent guides
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        event = "BufReadPre",
+        opts = {
+            show_foldtext = false,
+            char_priority = 12,
+            space_char_blankline = " ",
+            show_current_context = true,
+            show_current_context_start = true,
+            show_current_context_start_on_current_line = false,
+            show_first_indent_level = true,
+            filetype_exclude = {
+                "alpha",
+                "dbout",
+                "toggleterm",
+                "help",
+                "log",
+                "txt",
+                "neo-tree-popup",
+                "undotree",
+                "",
+            },
+        },
+    },
+
 	{
 		"anuvyklack/windows.nvim",
 		event = "WinNew",
