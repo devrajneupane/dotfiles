@@ -1,0 +1,97 @@
+# assignments from /etc/inputrc
+$include /etc/inputrc
+
+# when completing case will not be taken into consideration
+set completion-ignore-case on
+
+# Helpful when there is folder with lots of similarly named files
+set completion-prefix-display-length 2
+
+# Append slash to completion on symbolic link pointing to a directory
+set mark-symlinked-directories On
+
+# Color the common prefix in menu-complete
+set menu-complete-display-prefix On
+
+# make completions appear immediately after pressing TAB once
+set show-all-if-ambiguous on
+
+# underscores and hyphen are treated equally when completing
+set completion-map-case on
+
+# display possible completions using different colors to indicate their file type
+set colored-stats on
+
+# Append char to indicate type
+set visible-stats On
+
+# Color the common prefix in menu-complete
+set menu-complete-display-prefix On
+
+# Enables the display of different colors for the completion prefix
+set colored-completion-prefix on
+
+# Disable echoing ^C after Ctrl+c is pressed
+set echo-control-characters off
+
+# Tilde expansion is performed while word completion
+set expand-tilde on
+
+# set editing mode
+# set editing-mode vi
+# set show-mode-in-prompt on
+
+# use an internal more-like pager to display completions at a time
+set page-completions off
+
+# do not duplicate portions of word after cursor during completion at the middle of word
+set skip-completed-text on
+
+# Keybinds
+
+# like C-w but uses white space and the slash character as the word boundaries
+"\ew": unix-filename-rubout
+
+# append "| less" to the line and run
+"\el": "\C-e | less\C-m"
+
+# Kill all the characters in current line
+"\ek": kill-whole-line
+
+# edit the path
+# "\C-xp": "PATH=${PATH}\e\C-e\C-a\ef\C-f"
+"\C-xp": "PATH=${PATH}\e\C-e"
+
+# Refresh the current line
+"\C-xr": redraw-current-line
+
+# Redirect stdout to /dev/null
+"\e\\": " > /dev/null"
+
+# Pipe result of last command to fzf
+"\e/": '"$(!! | fzf)"\C-a \C-m'
+
+# insert quotes and move to just after the open quote
+"\e\'": "\'\'\C-b"
+"\e\"": "\"\"\C-b"
+
+# Quote the current or previous word
+"\eq": "\eb\"\ef\""
+
+# Prefix the line with sudo
+"\es": "\C-asudo \C-e"
+
+# Return to the previous directory
+"\ez": "cd -\C-m"
+
+# search through Bash's history
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# cycle through the list of possible matches
+"\t": menu-complete
+# S-TAB isn't recognized but it produces the keycode `^[[Z`
+"\e[Z": menu-complete-backward
+
+# Expand aliase inline
+"\C-xl": alias-expand-line

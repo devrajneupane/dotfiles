@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Additional external keyboard commands for nsxiv(1).
+# Invoked by pressing Ctrl-x.
+
+rotate() {
+    degree="$1"
+    tr '\n' '\0' | xargs -0 realpath | sort | uniq | while read file; do
+    case "$(file -b -i "$file")" in
+        image/jpeg*) jpegtran -rotate "$degree" -copy all -outfile "$file" "$file" ;;
+        *) mogrify -rotate "$degree" "$file" ;;
+    esac
+done
+}
+
+while read -r file; do
+    case "$1" in
+        "g")
+            # tr '\n' '\0' | xargs -0 gimp &
+            gimp "$file" &
+            ;;
+        "i")
+            notify-send "File information" \
+                "$(mediainfo "$file" | tr -s ' ' | grep -v CompleteName_Last)"
+            ;;
+        "C-d")
+            trash "$file"
+            ;;
+        "C-r")
+            convert -rotate 90 "$file" "$file"
+            ;;
+        "C-c")
+            xclip -selection clipboard -target image/png "$file"
+            ;;
+        "C-w")
+            feh --bg-scale "$file" &
+            ;;
+        "C-comma")
+            rotate 270
+            ;;
+        "C-period")
+            rotate 90
+            ;;
+        "C-slash")
+            rotate 180
+            ;;
+    esac
+done

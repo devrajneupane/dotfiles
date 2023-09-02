@@ -1,0 +1,17 @@
+[Added Associations]
+font/otf=nautilus-autorun-software.desktop;
+application/pdf=org.pwmt.zathura.desktop;
+image/jpeg=sxiv.desktop;
+image/png=sxiv.desktop;
+
+[Default Applications]
+application/pdf=org.pwmt.zathura.desktop
+inode/directory=org.gnome.Nautilus.desktop;
+image/jpeg=sxiv.desktop
+image/png=sxiv.desktop
+x-scheme-handler/https=Brave-Private.desktop
+x-scheme-handler/http=Brave-Private.desktop
+text/html=Brave-Private.desktop
+x-scheme-handler/about=Brave-Private.desktop
+x-scheme-handler/unknown=Brave-Private.desktop
+x-scheme-handler/mailto=brave-browser.desktop

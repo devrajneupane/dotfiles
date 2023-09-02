@@ -1,0 +1,47 @@
+theme = "catppuccin_mocha"
+
+[editor]
+scroll-lines = 1
+cursorline = true
+auto-save = false
+completion-trigger-len = 1
+true-color = true
+color-modes = true
+auto-pairs = true
+idle-timeout = 50
+line-number = "relative"
+
+ # [editor.gutters.diagnostics]
+ # characters = ""
+
+ # [editor.gutters.breakpoints.characters]
+ # verified = "●"
+ # other = "⊚"
+
+ # [editor.gutters.diff.characters]
+ # add = "▏"
+ # remove = "‾"
+ # change = "▏"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.indent-guides]
+render = true
+character = "▏"
+
+[editor.lsp]
+display-messages = true
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-type", "total-line-numbers", "file-encoding"]
+center = []
+right = ["selections", "primary-selection-length", "position", "position-percentage", "spacer", "diagnostics", "workspace-diagnostics"]
+
+# [[language]]
+# name = "python"
+# scope = "source.python"
+# language-server = { command = "ruff-lsp" }
+# config = { settings = { args = [] } }

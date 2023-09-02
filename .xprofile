@@ -1,0 +1,106 @@
+#! /bin/env bash
+
+# Env settings
+export XDG_CURRENT_DESKTOP="Gnome"
+
+# default editor
+export VISUAL="/usr/bin/nvim"
+export EDITOR="$VISUAL"
+
+# colored password prompt
+export SUDO_PROMPT="$(tput setaf 1 bold)Password:$(tput sgr0) "
+
+# Default browser
+export BROWSER="brave --incognito"
+
+# Default GTK theme
+export GTK_THEME=Orchis-dark
+
+# Uniform look for Qt and GTK applications
+export QT_QPA_PLATFORMTHEME="qt5ct"
+
+# Non-standard folder/file locations (moving out of the home dir)
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_CACHE_HOME="${HOME}/.cache"
+
+export XDG_RUNTIME_DIR="/run/user/$UID"
+# export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+
+# xsession start script
+# export USERXSESSION="$XDG_CACHE_HOME/x11/xsession"
+# export USERXSESSIONRC="$XDG_CACHE_HOME/x11/xsessionrc"
+# export ALTUSERXSESSION="$XDG_CACHE_HOME/x11/Xsession"
+export ERRFILE="$XDG_CACHE_HOME/x11/xsession-errors"
+
+# Move bash history file
+export HISTFILE="${XDG_STATE_HOME}/bash/history"
+
+# Move readline config
+export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+
+# Move vimrc
+export MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc"
+# export VIMINIT="source ${MYVIMRC}"
+
+# Move CUDA
+export CUDA_CACHE_PATH="${XDG_CACHE_HOME}/nv"
+
+# Move pyenv
+export PYENV_ROOT="${XDG_DATA_HOME}/pyenv"
+
+# Move kaggle
+export KAGGLE_CONFIG_DIR="${XDG_CONFIG_HOME}/kaggle"
+
+# Move Azure
+export AZURE_CONFIG_DIR="${XDG_CONFIG_HOME}/azure"
+
+# Move rust dirs
+export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+
+# ripgrep
+export RIPGREP_CONFIG_PATH=~/.config/ripgrep/ripgreprc
+
+# Move gnupg
+export GNUPGHOME="${XDG_DATA_HOME}/gnupg",
+
+# Move nvm
+export NVM_DIR="${XDG_DATA_HOME}/nvm"
+
+# Move npm
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+
+# Move rbenv
+export RBENV_ROOT="${XDG_DATA_HOME}/rbenv"
+
+# Move vscodium extension directory
+export VSCODE_PORTABLE="${XDG_DATA_HOME}/vscode"
+
+# Move docker config
+export DOCKER_CONFIG="${XDG_CONFIG_HOME}/docker"
+
+# Move python history file
+export PYTHONSTARTUP="${HOME}/.local/bin/startup.py"
+
+# Move mypy cache
+export MYPY_CACHE_DIR="${XDG_CACHE_HOME}/mypy"
+
+# Move node repl history
+export NODE_REPL_HISTORY="${XDG_DATA_HOME}/node_repl_history"
+
+# Move conda
+export CONDA_ROOT="${XDG_DATA_HOME}/conda"
+export CONDARC="${XDG_CONFIG_HOME}/condarc"
+
+# Move gtk2 config
+export GTK2_RC_FILES="${XDG_CONFIG_HOME}/gtk-2.0/gtkrc"
+
+# WGETRC
+export WGETRC="${XDG_CONFIG_HOME}/wget/wgetrc"
+
+# Disable less histfile
+export LESSHISTFILE=-
+
+# vim: ft=bash

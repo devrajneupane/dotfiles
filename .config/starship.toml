@@ -1,0 +1,103 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# continuation prompt
+continuation_prompt = "[❯](bright-black) "
+
+[[battery.display]]
+threshold = 50
+
+[custom.neovim]
+command = "nvim --version | rg NVIM | awk '{print $2}'"
+detect_folders = ["lua"]
+style = "green"
+format = "[ $output ]($style)"
+shell =["bash"]
+
+# [custom.directory]
+# command = "[ $HOME = $PWD ] && echo  || echo 󰜥"
+# when = true
+# style = "cyan"
+# shell =["bash"]
+# format = "at [$path]($style)[$read_only]($read_only_style) "
+
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+home_symbol = " ~"
+read_only_style = "197"
+read_only = " 󰌾"
+# format = "at [$path]($style)[$read_only]($read_only_style) "
+
+[docker_context]
+# format = "via [ $context](bold blue) "
+symbol = " "
+
+[git_branch]
+symbol = "󰘬 "
+style = "bold green"
+truncation_length = 4
+truncation_symbol = "…/"
+
+[git_status]
+ahead = "⇡${count}(bold cyan)"
+behind = "⇣${count}(bold cyan)"
+conflicted = "[${count}~](red)"
+deleted = "[${count}- ](red)"
+diverged = "⇕${ahead_count}⇣${behind_count}"
+modified = "[${count}+ ](yellow)"
+renamed = "[${count}» ](green)"
+staged = "[${count}+](green)"
+stashed = "[ ${count}*](green)"
+style = "bold green"
+untracked = "[${count}?](blue)"
+up_to_date = "✓"
+
+[kubernetes]
+disabled = false
+
+[lua]
+symbol = " "
+lua_binary = "luajit"
+
+[memory_usage]
+disabled = false
+symbol = "󰍛 "
+format = '\[$symbol[$ram( | $swap)]($style)\]'
+
+[nodejs]
+# format = "via [ $version](bold green) "
+symbol = ""
+
+[package]
+symbol = " "
+
+[python]
+symbol = " "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = " "
+
+[status]
+disabled = false
+map_symbol = true
+not_executable_symbol = " "
+not_found_symbol = "" # 
+sigint_symbol = " "
+symbol = "✘ "
+pipestatus = true
+pipestatus_separator = "| "
+
+[sudo]
+disabled = false
+symbol = "🚀 "
+
+[username]
+style_user = "white bold"
+style_root = "black bold"
+format = "[$user]($style) "
+show_always = false

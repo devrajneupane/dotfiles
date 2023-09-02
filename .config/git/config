@@ -1,0 +1,138 @@
+[alias]
+    bed = branch --edit-description
+    br = branch -vv
+    bra = branch -vv --all
+    bl = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+    cc = rev-list HEAD --count
+    cca = rev-list --all --count
+    co = checkout
+    dcw = diff --cached --color-words
+    dh = diff HEAD~
+    dhs = diff HEAD~ --stat
+    dhw = diff HEAD~ --color-words
+    diw = diff --color-words
+    f = fetch --tags --prune
+    fa = fetch --all --tags --prune
+    gr = log --graph --format=line # graph
+    gra = log --graph --format=line --all # graph all
+    grad = log --graph --format=detail --all # graph all in detail
+    grd = log --graph --format=detail # graph detail
+    hist = log --graph --date=short --color
+    info = ! "inf() { if git rev-parse ${1} >/dev/null 2>&1; then git cat-file -p $(git rev-parse ${1}); else echo Invalid object; fi }; inf"
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate --date=short
+    last = log -1 --oneline --color
+    ls = ls-files
+    root = rev-parse --show-toplevel
+    s = status
+    st = status -sb -uno --ignore-submodules=untracked
+    sf = show --format=fuller --show-signature
+    sfs = show --format=fuller --stat
+    sfw = show --format=fuller --color-words
+    st = status -sb
+    ups = log @{u}..
+    update-submodules = submodule update --init --recursive
+    upgrade-submodules = submodule update --init --remote
+    findcommit = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+    findmessage = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+    # List aliases
+    aliases = config --get-regexp alias
+
+    # past 30 days stat
+    stat = !"git log --since '30 days ago' --author $(git config --get user.name) --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"Lines: +\\033[32m%s\\033[0m -\\033[31m%s\\033[0m\\nTotal: \\033[34m%s\\033[0m\\n\", add, subs, loc }'"
+
+[color]
+    ui = auto
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+    grep = auto
+
+[color "branch"]
+    current     = green ul
+    local       = yellow
+    plain       = white
+
+[color "diff"]
+    new         = green
+    plain       = white
+    whitespace  = yellow reverse
+    func        = yellow
+    meta = 11
+    frag = magenta bold
+
+[color "grep"]
+    ; context     = white
+    ; filename    = cyan
+    ; function    = yellow
+    ; linenumber  = white
+    ; match       = white magenta
+    ; selected    = green
+    ; separator   = white
+    match = cyan bold
+    selected = blue
+    context = normal
+    filename = magenta
+    linenumber = green
+    separator = yellow
+    function = blue
+
+[pretty]
+    line = "%C(auto)%h %<|(60,trunc)%s %C(green)%ad%C(auto)%d"
+    detail = "%C(auto)%h %s%n  %C(yellow)by %C(blue)%an %C(magenta)<%ae> [%G?] %C(green)%ad%n %C(auto)%d%n"
+
+[color "status"]
+    added       = green
+    changed     = magenta
+    untracked   = cyan
+    branch      = magenta blink
+    nobranch    = red blink
+
+[core]
+    editor = nvim
+    pager = delta
+
+[commit]
+    verbose = true
+    template = ~/.config/.gitmessage
+
+[interactive]
+    diffFilter = delta --color-only --features=interactive
+
+[merge]
+    conflictstyle = diff3
+    guitool = vimdiff
+
+[diff]
+    colorMoved = default
+
+[grep]
+    lineNumber = true
+
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[delta]
+    features = decorations
+    true-color = always
+    line-numbers = true
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color
+    ; side-by-side = true
+    ; syntax-theme = tokyonight_moon
+
+[delta "interactive"]
+    keep-plus-minus-markers = false
+
+[delta "decorations"]
+    commit-decoration-style = blue ol
+    commit-style = raw
+    file-style = omit
+    hunk-header-decoration-style = blue box
+    hunk-header-file-style = red
+    hunk-header-line-number-style = "#067a00"
+    hunk-header-style = file line-number syntax

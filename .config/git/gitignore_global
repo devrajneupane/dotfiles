@@ -1,0 +1,23 @@
+# Compiled source 
+###################
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+
+# Editing tools and IDEs 
+##########################
+.sw[a-p]
+[._]*.sw[a-p]
+[._]*.s[a-v][a-z]
+*~
+~*
+\#*\#
+\.#*
+.ipynb_checkpoints/
+
+# Logs 
+######################
+*.log

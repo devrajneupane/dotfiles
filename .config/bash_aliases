@@ -1,0 +1,235 @@
+# All the standard automatic color formatting of the typical commands
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias ip='ip -color=auto'
+
+# using nvim nightly
+alias nvim="${XDG_DATA_HOME}/bob/nvim-bin/nvim"
+
+# quick way to get out of current directory
+alias ..='cd ..'
+alias ...='cd ../../'
+alias .3='cd ../../../'
+alias .4='cd ../../../../'
+alias .5='cd ../../../../..'
+alias -- -="cd -"
+
+# Privileged access
+if (( UID != 0 )); then
+    alias sudo='sudo '
+    alias sbat='sudo bat'
+    alias svim='sudoedit'
+    alias root='sudo -i'
+    alias reboot='sudo systemctl reboot'
+    alias poweroff='sudo systemctl poweroff'
+fi
+
+# Print each PATH entry on a separate line
+alias path='echo -e ${PATH//:/\\n}'
+
+# cd to directory and list files
+cl(){
+    cd "${1}" && ls -a
+}
+
+# create multiple directory and cd into first one
+mkcd() {
+    mkdir -p "${@}" && cd "${!#}" || exit
+}
+
+# Remove current empty directory
+rmcd(){
+    cd .. && rmdir "$OLDPWD"
+}
+
+# Calculate with =
+= () { bc -l <<< "$*"; }
+
+# Navigate to project under this dir
+jj () {
+    cd "${1:-.}/$(find . -maxdepth 5 -type d -name .git | sed 's|/.git$||' | fzf --preview 'eza --tree {}')"
+}
+
+# notify when internet is back
+online() {
+    until ping -W1 -c3 1.1.1.1; do
+        sleep 5
+    done
+    notify-send "Internet is Back"
+}
+
+# Explain whole commands using https://mankier.com
+explain() {
+  local api_url
+  api_url="https://www.mankier.com/api/v2/explain/?cols=$(($(tput cols) - 3))"
+  if (($# == 0)); then
+    while read -rp "$(printf "\e[1;37mCommand: \e[0m")" cmd; do
+      if [[ "$cmd" == "" ]]; then
+        break
+      fi
+      curl -s --get "$api_url" --data-urlencode "q=$cmd"
+    done
+  elif (($# == 1)); then
+    curl -s --get "$api_url" --data-urlencode "q=$*"
+  else
+    echo "Usage:"
+    echo "  $0                  interactive mode"
+    echo "  $0 'cmd -o | ...'   one quoted command to explain it"
+    return 1
+  fi
+}
+
+
+# Gitignore
+giti() {
+    curl -sL "https://www.toptal.com/developers/gitignore/api/$1"
+}
+
+# Check if a file contains non-ascii characters
+nonascii() {
+    LC_ALL=C grep -n '[^[:print:][:space:]]' "${@}"
+}
+
+# Serve current directory
+serve() {
+   python3 -m http.server 3333
+}
+
+# Find out what's running on a given port
+whatsonport() {
+    lsof -i tcp:$1
+}
+
+# Browse and install aur packages
+aur() {
+    paru -Slq | fzf -m --reverse --preview 'cat <(paru -Sii {1}) <(paru -Fl {1} | awk "{print \$2}")' | xargs -ro paru -S
+}
+
+# manage dotfiles with git
+alias cit='/usr/bin/git --git-dir="$HOME/dotfiles/" --work-tree="$HOME"'
+
+# cd to git root directory
+alias cdr='cd `git rev-parse --show-toplevel`'
+
+# Add an "alert" alias for long running commands eg: sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# make a temporary directory and cd into it
+alias cdt="cd $(mktemp -d)"
+
+# list of files that ever existed
+alias gitl='git log --pretty=format: --name-only --diff-filter=A | sort - | sed '/^$/d''
+
+# List all files in current working directory in a list format
+alias ll='eza --ignore-glob=.git --long --all --binary --group --icons '
+
+# List all files in current working directory including hidden files and folders
+alias la='ls -A'
+
+# Classify all files in current working directory into columns
+alias l='ls -CF'
+
+# List all files in current directory including hidden files and folders, in a list, with human-readable file sizes.
+alias lsa='ls -alh'
+
+# List all files in currenct directory except for implied . and .. paths
+alias lss='ls -A1'
+
+# Show hidden files and directories
+alias l.='ls -d .*'
+
+# list directory in tree format
+alias tree='eza --ignore-glob=.git --all --tree --icons'
+
+# Ignore errors and warnings, and force the removal of a given file or directory
+alias rm='rm -if'
+
+# Copy file or folder from A to B, with interactive prompt
+alias cp='cp -i'
+
+# Print name of ecah linked file
+alias ln="ln --verbose"
+
+# Move file or folder from A to B, with interactive prompt
+alias mv='mv -i'
+
+# cat(1) bare replacement using nvim
+alias vat="command nvim -R -M -c 'nnoremap <silent> q :quit<CR>'"
+
+# Show system drive storage information in human-formatted numbers
+alias df='df -h'
+
+# Display the amount of memory in mebibytes.
+alias free='free -m'
+
+# Start calculator with math support
+alias bc='bc -l'
+
+# root privileges
+alias doas="doas --"
+
+# Check the systemctl daemon for failed units - format for human interpretation
+alias sysf='systemctl list-units --state=failed --no-pager'
+
+# Returns the current system time in UTC
+alias udate='env TZ=UTC date'
+
+# List disk usage for a file or folder in human format [defaults to the current working directory unless file/folder path specified]
+alias dff='du -sh'
+
+# start nvim in diff mode
+alias vimdiff='nvim -d'
+
+# Opens the editor with vertical splits, each containing the output from the
+# below substitutions.
+# 1. Names and values of shell variables
+# 2. Shell option settings (set/unset)
+# 3. Readline variables
+# 4. Readline keybindings
+alias options='nvim -O <(set -o) <(shopt) <(bind -v) <(bind -p)'
+
+# Count how many files are in current directory
+alias count='find . -maxdepth 1 -type f | wc -l'
+
+# Shows the output of the mount command, but pretty prints the response and shows human-formatted storage sizes
+alias mount='mount | column -t'
+
+# Parenting changing perms on /
+alias chown='chown --preserve-root --verbose'
+alias chmod='chmod --preserve-root --verbose'
+alias chgrp='chgrp --preserve-root --verbose'
+
+# Get system memory, cpu usage, and gpu memory info quickly
+alias meminfo='free -m -l -t'
+
+# ps
+alias psa="ps auxf"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+
+# get top process eating memory
+alias psmem='ps auxf | sort -nr -k 4'
+
+# list orphaned process (not sure)
+alias orphans="ps -elf | head -1; ps -elf | awk '{if (\$5 == 1 && \$3 != \"root\") {print \$0}}' | head"
+
+# get error messages from journalctl for current boot
+alias jctl="journalctl -p 3 -xb"
+
+# Netcat-based command line pastebin
+alias tb="nc termbin.com 9999"
+
+# get top process eating cpu
+alias pscpu='ps auxf | sort -nr -k 3'
+
+# get size of GPU memory
+alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log'
+
+# Remove build files created during the installation of packages
+alias yay='yay --removemake'
+
+# cause i'm too lazy to sync vim with neovim
+alias vim='vim -u ~/.config/vim/vimrc'
+
+# yarn sucks
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME/yarn/config"'

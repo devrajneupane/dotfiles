@@ -1,0 +1,8 @@
+include ../../.local/share/nvim/lazy/tokyonight.nvim/extras/zathura/tokyonight_storm.zathurarc
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set selection-clipboard clipboard
+
+map D set "first-page-column 1:1"
+map <C-d> set "first-page-column 1:2"
+

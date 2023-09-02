@@ -1,0 +1,50 @@
+# Increase/Decrease brightness
+XF86MonBrightness{Up,Down}
+	${HOME}/.local/bin/changebrightness {up,down}
+
+# Increase/Decrease volume
+XF86Audio{Raise,Lower}Volume
+	pactl set-sink-volume @DEFAULT_SINK@ {+,-}1000
+
+# Toggle Mute
+XF86AudioMute
+	pactl  set-sink-mute @DEFAULT_SINK@ toggle
+
+# PrintScreen
+Print
+	${HOME}/.local/bin/maimpick
+
+# Reload sxhkd
+super + shift + r
+	pkill -USR1 -x sxhkd && notify-send 'sxhkd' 'Config reloaded'
+
+# Launch browser in incognito mode
+super + i
+	brave --incognito
+
+# Close topmost notification
+super + q
+	dunstctl close
+
+# Close all notifications
+super + alt + q
+	dunstctl close-all
+
+# Perform default notification action
+super + a
+	dunstctl action
+
+# Open notification context menu
+super + x
+	dunstctl context
+
+# Pop the latest notification from history
+super + comma
+	dunstctl history-pop
+
+# SXHKD help
+super + shift + slash
+    grep -A 1 '^#' ${HOME}/.config/sxhkd/sxhkdrc \
+    | sed -e '/^-- */d' -e 's/super/ /g' \
+    | awk '/^#/\{sub(/^#/, ""); line=$0; next\} \{printf "%-30s%s\n", $0, line\}' \
+    | rofi -theme-str 'window \{width: 780px;\}' -dmenu -theme ${HOME}/.config/rofi/launchers/type-1/style-5.rasi

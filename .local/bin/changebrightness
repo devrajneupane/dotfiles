@@ -1,0 +1,18 @@
+#!/bin/sh
+
+notify() {
+    brightness=$(printf "%.0f\n" $(brillo -G))
+    # dunstify -a "changebrightness" -u low -r 9991 -h int:value:"$brightness" -i "brightness-$1" "Brightness: $brightness%" -t 2000
+    dunstify -a "$0" -u low -r 9991 -h int:value:"$brightness" -i brightnesssettings "Brightness: $brightness%" -t 2000
+}
+
+case $1 in
+up)
+    brillo -q -u 200000 -A 5
+    notify $1
+    ;;
+down)
+    brillo -q -u 200000 -U 5
+    notify $1
+    ;;
+esac
