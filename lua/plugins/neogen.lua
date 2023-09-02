@@ -3,6 +3,10 @@ return {
     cmd = "Neogen",
     dependencies = "nvim-treesitter/nvim-treesitter",
     opts = {
+        languages = {
+            lua = { template = { annotation_convention = 'emmylua' } },
+            python = { template = { annotation_convention = 'numpydoc' } },
+        },
         snippet_engine = "luasnip",
     },
     keys = {
@@ -11,28 +15,28 @@ return {
             function()
                 require("neogen").generate({ type = "file" })
             end,
-            desc = "generate file annotations",
+            desc = "file",
         },
         {
             "<leader>gac",
             function()
                 require("neogen").generate({ type = "class" })
             end,
-            desc = "generate class annotations",
+            desc = "class",
         },
         {
             "<leader>gaf",
             function()
                 require("neogen").generate({ type = "func" })
             end,
-            desc = "generate function annotations",
+            desc = "function",
         },
         {
             "<leader>gat",
             function()
                 require("neogen").generate({ type = "type" })
             end,
-            desc = "generate type annotations",
+            desc = "type",
         },
     },
 }

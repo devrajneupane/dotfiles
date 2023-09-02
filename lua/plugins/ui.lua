@@ -1,55 +1,214 @@
-local cmd = require("utils").cmd
 return {
-	-- auto-resize windows
+    -- auto-resize windows
+    {
+        "anuvyklack/windows.nvim",
+        event = "WinNew",
+        dependencies = {
+            { "anuvyklack/middleclass" },
+            -- { "anuvyklack/animation.nvim" },
+        },
+        config = function()
+            vim.o.winwidth = 5
+            vim.o.equalalways = false
+            require("windows").setup({
+                animation = { enable = false, duration = 150 },
+            })
+        end,
+        keys = {
+            { "<leader>wm", "<Cmd>WindowsMaximize<CR>", desc = "maximize current window" },
+            { "<leader>w-", "<Cmd>WindowsMaximizeVertically<CR>", desc = "maximize window vertically" },
+            { "<leader>w|", "<Cmd>WindowsMaximizeHorizontally<CR>", desc = "maximize  window horizontally" },
+            { "<leader>w=", "<Cmd>WindowsEqualize<CR>", desc = "equalize all windows" },
+            {
+                "<leader>ww",
+                function()
+                    require("utils").notify("autowidth toggled", "INFO", { title = "Windows.nvim" })
+                    return "<Cmd>WindowsToggleAutowidth<CR>"
+                end,
+                desc = "toggle windows auto width",
+            },
+        },
+    },
+
+    -- configurable 'statuscolumn' and click handlers
+    {
+        "luukvbaal/statuscol.nvim",
+        event = "BufReadPost",
+        config = function()
+            local builtin = require("statuscol.builtin")
+            require("statuscol").setup({
+                bt_ignore = { "terminal", "nofile" },
+                relculright = true,
+                segments = {
+                    {
+                        text = { builtin.foldfunc, " " },
+                        condition = { true, builtin.not_empty },
+                        click = "v:lua.ScFa",
+                    },
+                    {
+                        sign = {
+                            name = { ".*" },
+                            namespace = { ".*" },
+                            maxwidth = 1,
+                            colwidth = 2,
+                            wrap = true,
+                            auto = true,
+                        },
+                        click = "v:lua.ScSa",
+                    },
+                    { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+                    {
+                        sign = {
+                            name = { "GitSigns*", "Todo*" },
+                            namespace = { "gitsigns_extmark_signs_" },
+                            maxwidth = 1,
+                            colwidth = 1,
+                            wrap = true,
+                            auto = true,
+                        },
+                        click = "v:lua.ScSa",
+                    },
+                },
+            })
+        end,
+    },
+
+    --Rainbow delimiters for Neovim with Tree-sitter
+    {
+        "HiPhish/rainbow-delimiters.nvim",
+        event = "BufReadPre",
+        config = function()
+            local rainbow = require("rainbow-delimiters")
+            vim.g.rainbow_delimiters = {
+                strategy = {
+                    [""] = rainbow.strategy["global"],
+                    vim = rainbow.strategy["local"],
+                    html = rainbow.strategy['local'],
+                },
+                query = {
+                    [""] = "rainbow-delimiters",
+                    lua = "rainbow-blocks",
+                    query = function(bufnr) -- test
+                        -- Use blocks for read-only buffers like in `:InspectTree`
+                        local is_nofile = vim.bo[bufnr].buftype == 'nofile'
+                        return is_nofile and 'rainbow-blocks' or 'rainbow-delimiters'
+                    end
+                },
+                priority = {
+                    [""] = 110,
+                    lua = 210,
+                },
+                highlight = {
+                    "RainbowDelimiterRed",
+                    "RainbowDelimiterCyan",
+                    "RainbowDelimiterOrange",
+                    "RainbowDelimiterGreen",
+                    "RainbowDelimiterBlue",
+                    "RainbowDelimiterViolet",
+                    "RainbowDelimiterYellow",
+                },
+            }
+        end,
+    },
 
     -- indent guides
     {
         "lukas-reineke/indent-blankline.nvim",
         event = "BufReadPre",
+        main = "ibl",
         opts = {
-            show_foldtext = false,
-            char_priority = 12,
-            space_char_blankline = " ",
-            show_current_context = true,
-            show_current_context_start = true,
-            show_current_context_start_on_current_line = false,
-            show_first_indent_level = true,
-            filetype_exclude = {
-                "alpha",
-                "dbout",
-                "toggleterm",
-                "help",
-                "log",
-                "txt",
-                "neo-tree-popup",
-                "undotree",
-                "",
+            scope = {
+                show_start = false,
+                show_end = false,
+                include = {
+                    node_type = { lua = { "table_constructor" } }, -- "return_statement",
+                },
+                highlight = {
+                    "RainbowDelimiterCyan",
+                    "RainbowDelimiterRed",
+                    "RainbowDelimiterYellow",
+                    "RainbowDelimiterBlue",
+                    "RainbowDelimiterOrange",
+                    "RainbowDelimiterGreen",
+                    "RainbowDelimiterViolet",
+                }
+            },
+            indent = {
+                char = "│", -- ▏
+                -- tab_char = "│", -- tabs
+                priority = 11,
+            },
+            exclude = {
+                filetypes = { "neo-tree-popup", "toggleterm", "undotree" },
+            },
+        },
+        -- NOTE: idk why but integration with rainbow_delimeters make nvim so laggy
+        -- config = function(_, opts)
+            -- local highlight = {
+            --     "RainbowDelimiterRed",
+            --     "RainbowDelimiterYellow",
+            --     "RainbowDelimiterBlue",
+            --     "RainbowDelimiterOrange",
+            --     "RainbowDelimiterGreen",
+            --     "RainbowDelimiterViolet",
+            --     "RainbowDelimiterCyan",
+            -- }
+            -- opts.scope.highlight = highlight
+            -- vim.g.rainbow_delimeters = { highlight = highlight }
+            -- require('ibl').setup(opts)
+            -- local hooks = require('ibl.hooks')
+            -- hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+            -- hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+        -- end,
+        keys = {
+            {
+                "<leader>cc",
+                function() -- WIP
+                    local bufnr = vim.api.nvim_get_current_buf()
+                    local config = require("ibl.config").get_config(bufnr)
+                    local scope = require("ibl.scope").get(bufnr, config)
+                    vim.print(scope:range(0))
+                    -- if scope then
+                    --     vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), { scope:range(0)})
+                    -- end
+                end,
+                desc = "jump to current context",
             },
         },
     },
 
-	{
-		"anuvyklack/windows.nvim",
-		event = "WinNew",
-		dependencies = {
-			{ "anuvyklack/middleclass" },
-			{ "anuvyklack/animation.nvim", enabled = true },
-		},
-		config = function()
-			vim.o.winwidth = 5
-			vim.o.equalalways = false
-			require("windows").setup({
-				animation = { enable = true, duration = 150 },
-			})
-		end,
-		keys = {
-			{ "<leader>z", cmd("WindowsMaximize"), desc = "windows: Zoom" },
-			{ "<leader>_", cmd("WindowsMaximizeVertically"), desc = "windows: maximize vertically" },
-			{ "<leader>|", cmd("WindowsMaximizeHorizontally"), desc = "windows: maximize horizontally" },
-			{ "<leader>=", cmd("WindowsEqualize"), desc = "windows: maximize vertically" },
-		},
-	},
-    -- imporve the default vim.ui interfaces
+    -- add additional highlights buffers
+    {
+        "folke/paint.nvim",
+        event = "BufReadPre",
+        opts = {
+            highlights = {
+                {
+                    filter = { filetype = "lua" },
+                    pattern = "%s*%-%-%-%s*(@%w+)",
+                    hl = "Constant",
+                },
+            },
+        },
+    },
+
+    -- dims inactive portions of the code
+    {
+        "folke/twilight.nvim",
+        cmd = { "Twilight", "TwilightEnable", "TwilightDisable" },
+        keys = {
+            { "<leader>uT", "<Cmd>Twilight<CR>", desc = "toggle twilight" },
+        },
+    },
+
+    -- zen-mode
+    {
+        "folke/zen-mode.nvim",
+        cmd = "ZenMode",
+        keys = { { "<leader>z", "<cmd>ZenMode<cr>", desc = "zen mode" } },
+    },
+
+    -- improve the default vim.ui interfaces
     {
         "stevearc/dressing.nvim",
         init = function()
@@ -62,5 +221,32 @@ return {
                 return vim.ui.input(...)
             end
         end,
+        opts = {
+            select = {
+                get_config = function(opts)
+                    if opts.kind == "codeaction" or opts.kind == "codelens" then
+                        return {
+                            backend = "builtin", -- nui
+                            --[[ nui = {
+                                relative = "cursor",
+                                max_width = 40,
+                            }, ]]
+                            builtin = {
+                                relative = "cursor",
+                                max_height = 0.33,
+                                min_height = 5,
+                                max_width = 0.40,
+                                mappings = { ["q"] = "Close" },
+                                win_options = {
+                                    winhighlight = "FloatBorder:LspFloatWinBorder,DressingSelectIdx:LspInfoTitle,MatchParen:Ignore",
+                                    winblend = 5,
+                                },
+                            },
+                        }
+                    end
+                end,
+                backend = { "telescope", "builtin" },
+            },
+        },
     },
 }

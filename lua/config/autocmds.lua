@@ -1,12 +1,12 @@
-local utils = require('utils')
+local utils = require("utils")
 local augroup = utils.augroup
 
 -- Jump to the last cursor position when reopening a file
 vim.api.nvim_create_autocmd("BufReadPost", {
-    desc = "go to last cursor position when reopening a file",
-    callback = function()
-        local mark = vim.api.nvim_buf_get_mark(0, '"')
-        local lcount = vim.api.nvim_buf_line_count(0)
+    desc = "go to last loc when opening a file",
+    callback = function(event)
+        local mark = vim.api.nvim_buf_get_mark(event.buf, '"')
+        local lcount = vim.api.nvim_buf_line_count(event.buf)
         if mark[1] > 0 and mark[1] <= lcount then
             pcall(vim.api.nvim_win_set_cursor, 0, mark)
         end
@@ -14,27 +14,38 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "Briefly highlight yanked text",
+    desc = "briefly highlight yanked text",
     callback = function()
         vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100, on_visual = true })
     end,
 })
 
+--[[ vim.api.nvim_create_autocmd("BufReadCmd", {
+    ---@source: https://vim.fandom.com/wiki/Use_gf_to_open_a_file_via_its_URL
+    pattern = { 'file:///*' },
+    nested = true,
+    command = function(event)
+        vim.cmd.bdelete({bang = true})
+        vim.cmd.edit(vim.uri_to_fname(event.file))
+    end
+}) ]]
+
 vim.api.nvim_create_autocmd("FileType", {
     group = augroup("GetRelief"),
-    pattern = {"help", "man"},
+    pattern = { "help", "man", "noice" },
     callback = function()
-        vim.api.nvim_buf_set_keymap(0, "n", "d", "<C-d>", { nowait = true,  })
-        vim.api.nvim_buf_set_keymap(0, "n", "u", "<C-u>", { nowait = true,  })
+        vim.api.nvim_buf_set_keymap(0, "n", "d", "<C-d>", { nowait = true })
+        vim.api.nvim_buf_set_keymap(0, "n", "u", "<C-u>", { nowait = true })
+        vim.api.nvim_buf_set_keymap(0, "n", "<CR>", "<C-]>", { nowait = true })
+        vim.api.nvim_buf_set_keymap(0, "n", "<BS>", "<C-T>", { nowait = true })
     end,
-    desc = "scroll inside help without hurting pinky",
+    desc = "navigate help without hurting pinky",
 })
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
     group = augroup("close_with_q"),
     callback = function(event)
         local filetypes = {
-            "",
             "checkhealth",
             "diff",
             "help",
@@ -52,55 +63,45 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
             "toggleterm",
             "tsplayground",
         }
+        local buffers = { "nofile", "help" }
         local filetype = vim.api.nvim_get_option_value("filetype", { buf = event.buf })
         local buftype = vim.api.nvim_get_option_value("buftype", { buf = event.buf })
-        if buftype == "nofile" or vim.tbl_contains(filetypes, filetype) then
-            utils.map("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true, nowait = true })
+        if vim.tbl_contains(buffers, buftype) or vim.tbl_contains(filetypes, filetype) then
+            utils.map("n", "q", "<cmd>quit<cr>", { buffer = event.buf, nowait = true })
         end
     end,
-    desc = "Close window with q",
+    desc = "close window with q",
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
     group = augroup("auto_mkdir"),
-    desc = "Auto create parent directories on save",
-    callback = function(event)
-        local path = vim.fs.dirname(vim.api.nvim_buf_get_name(event.buf))
-        if vim.fn.isdirectory(path) == 0 then
-            vim.fn.mkdir(path, "p")
-        end
-    end,
-})
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-    group = augroup("auto_cd"),
     desc = "auto create parent directories on save",
     callback = function(event)
-        local path = vim.fs.dirname(vim.api.nvim_buf_get_name(event.buf))
+        local path = vim.fs.dirname(event.file)
         if vim.fn.isdirectory(path) == 0 then
             vim.fn.mkdir(path, "p")
         end
     end,
 })
 
-vim.api.nvim_exec(
-    [[
-    augroup nvim_opts
-    autocmd!
-    autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
-    augroup end
-    ]],
-    false
-)
+vim.api.nvim_create_autocmd("TermOpen", {
+    group = augroup("term_opts"),
+    desc = "disable linenumber and signcolumn for terminal",
+    callback = function()
+        vim.opt_local.number = false
+        vim.opt_local.relativenumber = false
+        vim.opt_local.signcolumn = "no"
+    end,
+})
 
--- Remove white space on save
+-- Remove trailing white space on save
 vim.cmd([[autocmd BufWritePre * :%s/\s\+$//e]])
 
 -- Auto save files when focus is lost
 vim.cmd([[autocmd FocusLost * silent! wa]])
 
 -- Change spell checking hl.
-vim.api.nvim_set_hl(0, "SpellBad", { fg = "#FF0000", underline=true })
+vim.api.nvim_set_hl(0, "SpellBad", { underline = true })
 
 -- disable cursorline on foucs lost
 vim.cmd([[
@@ -124,22 +125,24 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "text", "gitcommit", "markdown", "tex" },
-    callback = function()
+    callback = function(event)
         vim.opt_local.wrap = true
         vim.opt_local.spell = true
-        vim.opt_local.spelllang = "en"
+        local buftype = vim.api.nvim_get_option_value("buftype", { buf = event.buf })
+        if vim.tbl_contains({ "nofile", "help" }, buftype) then
+            vim.opt_local.spell = false
+        end
     end,
 })
 
-
-vim.api.nvim_create_user_command('Hashbang', function()
+vim.api.nvim_create_user_command("Hashbang", function()
     local shells = {
         sh = { "#! /usr/bin/env bash" },
         py = { "#! /usr/bin/env python3" },
     }
-    -- INFO: there could be better way to get extension of current file
-    local ext = vim.fn.expand('%:e')
-    ext = ext ~= '' and ext or vim.bo.filetype
+    -- NOTE: there could be better way to get extension of current file
+    local ext = vim.fn.expand("%:e")
+    ext = ext ~= "" and ext or vim.bo.filetype
 
     if shells[ext] then
         local hb = shells[ext]
@@ -153,6 +156,14 @@ vim.api.nvim_create_user_command('Hashbang', function()
         })
     end
 end, { force = true, desc = "add hashbang to current buffer" })
+
+-- Automatically load diagnostics into location list
+-- vim.api.nvim_create_autocmd({ 'DiagnosticChanged' }, {
+--   group = vim.api.nvim_create_augroup('diagnostics', { clear = true }),
+--   callback = function()
+--     vim.diagnostic.setloclist({ open = false })
+--   end,
+-- })
 
 -- :h DiffOrig
 vim.api.nvim_create_user_command("DiffOrig", function()

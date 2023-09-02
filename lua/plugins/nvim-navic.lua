@@ -1,20 +1,16 @@
+-- TODO: replace this plugin with https://github.com/Bekaboo/dropbar.nvim after nvim>=0.10
 return {
     "SmiteshP/nvim-navic",
+    event = "LspAttach",
     init = function()
         vim.g.navic_silence = true
-        require("utils").on_attach(function(client, buffer)
-            if client.server_capabilities.documentSymbolProvider then
-                require("nvim-navic").attach(client, buffer)
-            end
-        end)
     end,
     opts = {
-        icons = require("utils").lsp_kinds,
+        icons = require("utils.icons").kinds,
         highlight = true,
         click = true,
-        lsp = {
-            auto_attach = true,
-            preference = nil,
-        },
+        separator = "  ", -- "  ",
+        -- depth_limit = 5,
+        lazy_update_context = true
     },
 }

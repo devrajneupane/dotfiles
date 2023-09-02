@@ -1,7 +1,9 @@
+-- TODO: huggingface/hfcc.nvim
+-- TODO: add keybind to toggle copilot
 return {
-
     -- copilot
     {
+        -- TODO: add keybinds
         "zbirenbaum/copilot.lua",
         cmd = "Copilot",
         build = ":Copilot auth",
@@ -29,8 +31,8 @@ return {
     -- ChatGPT
     {
         "jackMort/ChatGPT.nvim",
+        enabled = false, -- I'm so poor that i can't pay OpenAI bills
         cmd = { "ChatGPT", "ChatGPTActAs" },
-        opts = { }
+        opts = {},
     },
-    --TODO: huggingface/hfcc.nvim
 }

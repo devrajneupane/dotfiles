@@ -1,19 +1,29 @@
+local signs = require('utils.icons').diagnostics
 return {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
     opts = {
-        use_diagnostic_signs = true,
         auto_jump = { "loclist", "quickfix", "lsp_definitions", "lsp_references", "lsp_type_definitions" },
         auto_fold = true,
+        auto_close = true,
         padding = false,
+        signs = {
+            -- icons / text used for a diagnostic
+            error = signs.Error,
+            warning = signs.Warn,
+            hint = signs.Hint,
+            information = signs.Info,
+            other = ""
+        },
+        win_config = { border = "rounded" },
     },
     keys = {
-        { "<leader>xx", "<Cmd>TroubleToggle<CR>", desc = "toggle 🚦" },
+        { "<leader>xx", "<Cmd>TroubleToggle<CR>", desc = "toggle🚦" },
         { "<leader>xd", "<Cmd>TroubleToggle document_diagnostics<cr><CR>", desc = "document diagnostics🚦" },
         { "<leader>xw", "<Cmd>TroubleToggle workspace_diagnostics<cr><CR>", desc = "workspace diagnostics🚦" },
         { "<leader>xl", "<Cmd>TroubleToggle loclist<CR>", desc = "location list🚦" },
         { "<leader>xq", "<Cmd>TroubleToggle quickfix<CR>", desc = "quickfix list🚦" },
-        { "<leader>xr", "<cmd>TroubleToggle lsp_references<cr>", desc = "Lsp references (Trouble)" },
+        { "gR", "<cmd>TroubleToggle lsp_references<cr>", desc = "lsp references🚦" },
         {
             "[q",
             function()

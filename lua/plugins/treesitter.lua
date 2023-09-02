@@ -1,38 +1,50 @@
-local ts_persers = require("utils").ts_persers
+---@see: https://github.com/nvim-treesitter/nvim-treesitter/issues/4767
 return {
     {
         "nvim-treesitter/nvim-treesitter-context",
-        event = "CursorMoved",
-        config = function()
-            require("treesitter-context").setup({
-                mode = "topline", -- Line used to calculate context. Choices: 'cursor', 'topline'
-            })
-        end,
+        event = "BufReadPost",
+        opts = {
+            mode = "topline",
+            multiline_threshold = 4,
+            separator = '─', -- ─
+            on_attach = function()
+                vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+            end
+        },
+        keys = {
+            {"<leader>cx", function() require('treesitter-context').toggle() end, desc = "toggle code context"},
+            { "<leader>cC", function() require("treesitter-context").go_to_context() end, desc = "jump to code context" },
+        },
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        build = ":TSUpdate",
+        -- build = ":TSUpdate",
+        build = function()
+            require("nvim-treesitter.install").update({ with_sync = true })()
+        end,
         event = { "BufReadPost", "BufNewFile" },
         dependencies = {
-            "HiPhish/nvim-ts-rainbow2",
             "windwp/nvim-ts-autotag",
             "andymass/vim-matchup",
-            "RRethy/nvim-treesitter-textsubjects",
             "nvim-treesitter/nvim-treesitter-refactor",
             "nvim-treesitter/nvim-treesitter-textobjects",
-            "JoosepAlviste/nvim-ts-context-commentstring",
-            { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
         },
+        init = function(plugin)
+            -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
+            require("lazy.core.loader").add_to_rtp(plugin)
+            require("nvim-treesitter.query_predicates")
+        end,
         opts = {
-            -- sync_install = true,
-            ensure_installed = ts_persers,
+            ensure_installed = {
+                "vim", "vimdoc", "markdown", "markdown_inline", "regex",
+                -- "comment", -- IDK why comment perser slows nvim
+                "query", "bash", "lua", "html", "json", "yaml", "javascript",
+                "python", "rust", "typescript",
+            },
+            auto_install = true,
             autopairs = { enable = true },
             autotag = { enable = true },
-            indent = {
-                enable = true,
-                -- disable = { "python" },
-            },
-            context_commentstring = { enable = true, enable_autocmd = false },
+            indent = { enable = true }, -- disable = { "python" },
             highlight = {
                 enable = true,
                 use_languagetree = true,
@@ -43,50 +55,54 @@ return {
                         return true
                     end
                 end,
-                additional_vim_regex_highlighting = false,
+                additional_vim_regex_highlighting = { 'sql', 'org' },
             },
             matchup = {
                 enable = true,
-                matchup_matchparen_offscreen = { method = "status_manual" },
-                matchup_override_vimtex = 1,
+                matchup_matchparen_offscreen = { method = "status_manual" }, -- status_manual
+                matchup_matchparen_deferred = 1,
+                matchup_surround_enabled = 0, -- ds% and cs% cause a catastrophe
+                matchup_transmute_enabled = 1 -- :h transmute
             },
             query_linter = {
                 enable = true,
                 use_virtual_text = true,
                 lint_events = { "BufWrite", "CursorHold" },
             },
-            playground = {
-                enable = true,
-                disable = {},
-                updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
-                persist_queries = false, -- Whether the query persists across vim sessions
-            },
             textobjects = {
                 select = {
                     enable = true,
                     lookahead = true,
                     include_surrounding_whitespace = false,
+                    -- Do i need all ?  idk
                     keymaps = {
-                        ["a/"] = { query = "@comment.outer", desc = "Select comment" },
-                        ["ac"] = { query = "@conditional.outer", desc = "Select outer conditional" },
-                        ["ic"] = { query = "@conditional.inner", desc = "Select inner conditional" },
-                        ["af"] = { query = "@function.outer", desc = "Select outer part of a function" },
-                        ["if"] = { query = "@function.inner", desc = "Select inner part of a function" },
-                        ["aP"] = { query = "@parameter.outer", desc = "Select outer part of a parameter" },
-                        ["iP"] = { query = "@parameter.inner", desc = "Select inner part of a parameter" },
-                        ["aC"] = { query = "@class.outer", desc = "Select outer part of a class" },
-                        ["iC"] = { query = "@class.inner", desc = "Select inner part of a class" },
-                        ["aL"] = { query = "@loop.outer", desc = "Select outer loop" },
-                        ["iL"] = { query = "@loop.inner", desc = "Select inner loop" },
-                        ["ae"] = { query = "@block.outer", desc = "Select outer block" },
-                        ["ie"] = { query = "@block.inner", desc = "Select inner block" },
-                        ["al"] = { query = "@assignment.lhs", desc = "assignment left side" },
-                        ["ar"] = { query = "@assignment.rhs", desc = "assignment right side" },
-                        ["ao"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-                        ["aR"] = { query = "@call.outer", desc = "outer call" },
-                        ["iR"] = { query = "@call.inner", desc = "inner call" },
-                        ["aS"] = { query = "@statement.outer", desc = "Select outer statement" },
-                        ["iS"] = { query = "@statement.inner", desc = "Select inner statement" },
+                        ["aF"] = { query = "@custom-capture", desc = "test-py-capture" }, -- test
+                        ["aA"] = { query = "@assignment.outer", desc = "assignment" },
+                        ["iA"] = { query = "@assignment.inner", desc = "assignment" },
+                        ["ah"] = { query = "@assignment.lhs", desc = "assignment lhs" },
+                        ["aL"] = { query = "@assignment.rhs", desc = "assignment rhs" },
+                        ["ae"] = { query = "@block.outer", desc = "block" },
+                        ["ie"] = { query = "@block.inner", desc = "block" },
+                        ["ak"] = { query = "@call.outer", desc = "call" },
+                        ["ik"] = { query = "@call.inner", desc = "call" },
+                        ["ac"] = { query = "@class.outer", desc = "class" },
+                        ["ic"] = { query = "@class.inner", desc = "class" },
+                        ["a/"] = { query = "@comment.outer", desc = "comment" },
+                        ["i/"] = { query = "@comment.inner", desc = "comment" },
+                        ["a?"] = { query = "@conditional.outer", desc = "conditional" },
+                        ["i?"] = { query = "@conditional.inner", desc = "conditional" },
+                        ["af"] = { query = "@function.outer", desc = "function" },
+                        ["if"] = { query = "@function.inner", desc = "function" },
+                        ["al"] = { query = "@loop.outer", desc = "loop" },
+                        ["il"] = { query = "@loop.inner", desc = "loop" },
+                        ["in"] = { query = "@number.inner", desc = "number" },
+                        ["aa"] = { query = "@parameter.outer", desc = "parameter" },
+                        ["ia"] = { query = "@parameter.inner", desc = "parameter" },
+                        ["ar"] = { query = "@return.outer", desc = "return" },
+                        ["ir"] = { query = "@return.inner", desc = "return" },
+                        ["ao"] = { query = "@scope", query_group = "locals", desc = "scope" },
+                        ["aS"] = { query = "@statement.outer", desc = "statement" },
+                        ["iS"] = { query = "@statement.inner", desc = "statement" },
                     },
                     selection_modes = {
                         ["@parameter.outer"] = "v", -- charwise
@@ -97,74 +113,79 @@ return {
                 swap = {
                     enable = true,
                     swap_next = {
-                        ["]p"] = { query = "@parameter.inner", desc = "swap next parameter" },
-                        ["<leader>sf"] = { query = "@function.outer", desc = "swap next function" },
-                        ["<leader>sc"] = { query = "@class.outer", desc = "swap next class" },
-                        ["<leader>ss"] = { query = "@statement.outer", desc = "swap next statement" },
-                        ["<leader>sb"] = { query = "@block.outer", desc = "swap next block" },
+                        ["<leader>]a"] = { query = "@assignment.inner", desc = "assignment" },
+                        ["<leader>]b"] = { query = "@block.outer", desc = "block" },
+                        ["<leader>]c"] = { query = "@class.outer", desc = "class" },
+                        ["<leader>]f"] = { query = "@function.outer", desc = "function" },
+                        ["<leader>]p"] = { query = "@parameter.inner", desc = "parameter" },
                     },
                     swap_previous = {
-                        ["[p"] = { query = "@parameter.inner", desc = "Swap previous parameter" },
-                        ["<leader>sF"] = { query = "@function.inner", desc = "Swap previous function" },
-                        ["<leader>sC"] = { query = "@class.inner", desc = "Swap previous class" },
-                        ["<leader>sS"] = { query = "@statement.inner", desc = "Swap previous statement" },
-                        ["<leader>sB"] = { query = "@block.inner", desc = "Swap previous block" },
+                        ["<leader>[a"] = { query = "@assignment.inner", desc = "assignment" },
+                        ["<leader>[b"] = { query = "@block.outer", desc = "block" },
+                        ["<leader>[c"] = { query = "@class.outer", desc = "class" },
+                        ["<leader>[f"] = { query = "@function.outer", desc = "function" },
+                        ["<leader>[p"] = { query = "@parameter.inner", desc = "parameter" },
                     },
                 },
                 move = {
                     enable = true,
                     set_jumps = true,
                     goto_next_start = {
-                        ["]m"] = { query = "@function.outer", desc = "Next function start" },
-                        ["]]"] = { query = "@class.outer", desc = "Next class start" },
-                        ["]/"] = { query = "@comment.outer", desc = "Next Comment Start" },
-                        ["]o"] = { query = { "@loop.inner", "@loop.outer" } },
-                        ["]S"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
-                        ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
+                        ["]b"] = { query = "@block.outer", desc = "block start" },
+                        ["]?"] = { query = "@conditional.outer", desc = "conditional start" },
+                        ["]/"] = { query = "@comment.outer", desc = "comment start" },
+                        ["]C"] = { query = "@class.outer", desc = "class start" },
+                        ["]f"] = { query = "@function.outer", desc = "function start" },
+                        ["]z"] = { query = "@fold", query_group = "folds", desc = "fold start" },
+                        ["]l"] = { query = "@loop.outer", desc = "loop start" },
+                        ["]a"] = { query = "@parameter.inner", desc = "parameter start" },
+                        ["]S"] = { query = "@scope", query_group = "locals", desc = "scope" },
                     },
                     goto_next_end = {
-                        ["]M"] = { query = "@function.outer", desc = "Next Function End" },
-                        ["]["] = { query = "@class.outer", desc = "Next Class End" },
+                        ["]A"] = { query = "@parameter.outer", desc = "parameter end" },
+                        ["]F"] = { query = "@function.outer", desc = "function end" },
+                        ["]L"] = { query = "@loop.inner", desc = "loop end" },
                     },
                     goto_previous_start = {
-                        ["[m"] = { query = "@function.outer", desc = "Previous Function Start" },
-                        ["[["] = { query = "@class.outer", desc = "Previous Class Start" },
-                        ["[/"] = { query = "@comment.outer", desc = "Previous Comment Start" },
+                        ["[/"] = { query = "@comment.outer", desc = "comment start" },
+                        ["[?"] = { query = "@conditional.outer", desc = "conditional start" },
+                        ["[a"] = { query = "@parameter.inner", desc = "parameter start" },
+                        ["[b"] = { query = "@block.outer", desc = "block start" },
+                        ["[C"] = { query = "@class.outer", desc = "class start" },
+                        ["[f"] = { query = "@function.outer", desc = "function start" },
+                        ["[l"] = { query = "@loop.outer", desc = "loop start" },
+                        ["[S"] = { query = "@scope", query_group = "locals", desc = "scope" },
+                        ["[z"] = { query = "@fold", query_group = "folds", desc = "fold start" },
                     },
                     goto_previous_end = {
-                        ["[M"] = { query = "@function.outer", desc = "Previous Function End" },
-                        ["[]"] = { query = "@class.outer", desc = "Previous Class End" },
+                        ["[A"] = { query = "@parameter.outer", desc = "parameter end" },
+                        ["[B"] = { query = "@block.outer", desc = "block end" },
+                        ["[F"] = { query = "@function.outer", desc = "function end" },
+                        ["[L"] = { query = "@loop.outer", desc = "loop end" },
                     },
                 },
                 lsp_interop = {
                     enable = true,
                     border = "rounded",
-                    floating_preview_opts = {},
+                    -- floating_preview_opts = {},
                     peek_definition_code = {
-                        ["<leader>df"] = { query = "@function.outer", desc = "Peek function defination" },
-                        ["<leader>dF"] = { query = "@class.outer", desc = "Peek class defination" },
+                        ["<leader>pf"] = { query = "@function.outer", desc = "peek function defination" },
+                        ["<leader>pc"] = { query = "@class.outer", desc = "peek class defination" },
+                        ["<leader>pp"] = { query = "@parameter.inner", desc = "peek parameter" }, -- :)
                     },
-                },
-            },
-            textsubjects = {
-                enable = true,
-                prev_selection = ",",
-                keymaps = {
-                    ["."] = "textsubjects-smart",
-                    [";"] = "textsubjects-container-outer",
-                    ["i;"] = "textsubjects-container-inner",
                 },
             },
             incremental_selection = {
                 enable = true,
                 keymaps = {
-                    init_selection = "gnn",
-                    node_incremental = "grn",
-                    scope_incremental = "grc",
-                    node_decremental = "grm",
+                    -- init_selection = "<CR>",
+                    node_incremental = "v", -- "<CR>",
+                    node_decremental = "V", -- "<BS>",
+                    scope_incremental = "<M-CR>",
                 },
             },
             refactor = {
+                -- alternative RRethy/vim-illuminate
                 highlight_definitions = {
                     enable = true,
                     -- Set to false if you have an `updatetime` of ~100.
@@ -175,35 +196,37 @@ return {
                     enable = true,
                     keymaps = {
                         -- smart_rename = "grr",
-                        smart_rename = "gR",
+                        smart_rename = "<leader>rs",
                     },
                 },
                 navigation = {
                     enable = true,
                     keymaps = {
-                        -- goto_definition = "gnd",
-                        goto_definition_lsp_fallback = "<leader>gd", -- gnd
-                        list_definitions = "glD",  -- gnD
+                        goto_definition_lsp_fallback = "gd", -- gnd
+                        list_definitions = "gl", -- gnD
                         list_definitions_toc = "gO",
-                        goto_next_usage = "<a-*>",
-                        goto_previous_usage = "<a-#>",
+                        goto_next_usage = "]]", -- <A-n>
+                        goto_previous_usage = "[[", -- <A-p>
                     },
                 },
             },
         },
         config = function(_, opts)
             require("nvim-treesitter.configs").setup(opts)
-            require("nvim-treesitter.configs").setup({
-                rainbow = {
-                    enable = true,
-                    query = {
-                        "rainbow-parens",
-                         html = 'rainbow-tags' -- highlight tags instead
-                    },
-                    disable = { "jsx" },
-                    strategy = require("ts-rainbow").strategy.global,
-                },
-            })
+
+            local map = require("utils").map
+            local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+
+            -- Repeat movement with ; and ,
+            map({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move_next)
+            map({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_previous)
+
+            -- make builtin f, F, t, T also repeatable with ; and ,
+            -- FIX: dot repeat breaks if previous action includes following motion and idk why
+            map({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f)
+            map({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F)
+            map({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t)
+            map({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T)
         end,
     },
 }

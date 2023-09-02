@@ -15,3 +15,9 @@ tokyonight
 noremap
 noremap
 require
+core
+nvim
+undotree
+Textobject
+#run-reload-desktop-cache/!
+drun-reload-desktop-cache/!

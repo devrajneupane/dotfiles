@@ -1,5 +1,7 @@
+-- WIP
 return {
     { "nvim-neotest/neotest-python" },
+    { "rouge8/neotest-rust" },
     {
         "nvim-neotest/neotest",
         dependencies = {
@@ -12,6 +14,7 @@ return {
                     dap = { justMyCode = false, console = "integratedTerminal", subProcess = false },
                     pytest_discovery = true,
                 },
+                [ "neotest-rust" ] = {},
             },
             status = { virtual_text = true },
             icons = { running_animated = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" } },
@@ -19,7 +22,8 @@ return {
             quickfix = {
                 open = function()
                     if require("lazy.core.config").plugins["trouble.nvim"] ~= nil then
-                        vim.cmd("Trouble quickfix")
+                        -- vim.cmd("Trouble quickfix")
+                        vim.cmd.Trouble("quickfix")
                     else
                         vim.cmd("copen")
                     end

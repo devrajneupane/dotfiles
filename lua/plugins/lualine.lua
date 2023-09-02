@@ -1,58 +1,52 @@
+-- TODO: add component to show battery status when the battery drops below threshold
 return {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
+    event = {"BufReadPost"},
     dependencies = {
         { "nvim-tree/nvim-web-devicons" },
-        { "jcdickinson/wpm.nvim", event = "VeryLazy", config = true },
     },
     opts = function()
-        local colors = require("tokyonight.colors").setup()
+        -- local colors = require("tokyonight.colors").setup()
+        local icons = require('utils.icons')
 
-        local function diff_source()
-            ---@diagnostic disable-next-line: undefined-field
-            local gitsigns = vim.b.gitsigns_status_dict
-            if gitsigns then
-                return {
-                    added = gitsigns.added,
-                    modified = gitsigns.changed,
-                    removed = gitsigns.removed,
-                }
-            end
-        end
+        local lualine_require = require("lualine_require")
+        lualine_require.require = require
 
-        local location = { "location", padding = 0 }
-        local filename = { "filename", path = 1, shorting_target = 80, color = { bg = colors.bg } }
         return {
             options = {
-                icons_enabled = true,
-                theme = "auto",
+                theme = 'auto',
                 section_separators = "",
                 component_separators = "",
                 always_divide_middle = true,
                 globalstatus = true,
                 disabled_filetypes = {
                     statusline = {},
-                    winbar = {
-                        "diff",
-                        "neo-tree",
-                        "nofile",
-                        "noice",
-                        "qf",
-                        "toggleterm",
-                        "undotree",
-                    },
+                    winbar = { "dap-repl", "dbout", "dbui", "diff", "help", "man", "neo-tree", "nofile", "noice", "qf", "toggleterm", "Trouble", "undotree", "" },
                 },
             },
-            extensions = {
-                "lazy",
-                "man",
-                "toggleterm",
-                "trouble",
-                "neo-tree",
-                "quickfix",
-            },
+            extensions = { "lazy", "man", "mason", "neo-tree", "nvim-dap-ui", "quickfix", "toggleterm", "trouble" },
             sections = {
                 lualine_a = {
+                    {
+                        "mode",
+                        padding = {left = 1, right = 1},
+                        icon = ""
+                    },
+                    {
+                        function()
+                            local spinners = { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑑", "󱑒", "󱑓", "󱑔", "󱑕", "󱑖" }
+                            return spinners[os.date("%S") % #spinners + 1]
+                        end,
+                        cond = function()
+                            return vim.api.nvim_get_mode()["mode"] ~= "i"
+                        end,
+                        on_click = function()
+                            vim.print(os.date())
+                        end,
+                        padding = { left = 0, right = 1}
+                    },
+                },
+                lualine_b = {
                     {
                         "branch",
                         on_click = function()
@@ -60,147 +54,164 @@ return {
                                 require("telescope.builtin").git_branches()
                             end, 100)
                         end,
+                        icon = icons.git.branch,
+                        padding = { left = 1, right = 1 }
                     },
-                    {
-                        function()
-                            local sp_icons = { "🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘" }
-                            return sp_icons[os.date("%S") % #sp_icons + 1]
-                        end,
-                        cond = function()
-                            return vim.api.nvim_get_mode()["mode"] ~= "i"
-                        end,
-                    },
-                },
-                lualine_b = {
-                    { "diff", source = diff_source },
-                    "diagnostics",
                 },
                 lualine_c = {
                     {
-                        require("noice").api.status.search.get,
-                        cond = require("noice").api.status.search.has,
-                        color = { fg = "#ff9e71" },
+                        "diff",
+                        symbols = {
+                            added = icons.git.added,
+                            modified = icons.git.modified,
+                            removed = icons.git.removed,
+                        },
+                        source = function ()
+                            local gitsigns = vim.b.gitsigns_status_dict
+                            if gitsigns then
+                                return {
+                                    added = gitsigns.added,
+                                    modified = gitsigns.changed,
+                                    removed = gitsigns.removed,
+                                }
+                            end
+                        end,
                     },
                     {
+                        "diagnostics",
+                        symbols = {
+                            error = icons.diagnostics.Error,
+                            warn = icons.diagnostics.Warn,
+                            info = icons.diagnostics.Info,
+                            hint = icons.diagnostics.Hint,
+                        },
+                    },
+                    { "searchcount" }, -- color = { fg = colors.fg } },
+                    {
                         function()
-                            local key = require("grapple").key()
-                            return "  [" .. key .. "]"
+                            return require("noice").api.status.mode.get_hl()
                         end,
                         cond = function()
-                            return require("grapple").exists()
+                            return package.loaded["noice"] and require("noice").api.status.mode.has()
                         end,
+                        -- color = { fg = "#ff9e71" },
                     },
                 },
                 lualine_x = {
                     {
-                        require("wpm").wpm,
-                        cond = function()
-                            return vim.api.nvim_get_mode()["mode"] == "i"
+                        function()
+                            local wpm = require('wpm')
+                            return wpm.wpm() .. " " .. wpm.historic_graph()
                         end,
+                        cond = function() return package.loaded["wpm"] and vim.api.nvim_get_mode()["mode"] == "i" end,
                         color = { fg = "#008080" },
                     },
                     {
-                        require("wpm").historic_graph,
-                        cond = function()
-                            return vim.api.nvim_get_mode()["mode"] == "i"
+                        function() return require("dap").status() end,
+                        cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
+                        icon = icons.misc.Debug,
+                    },
+                    {
+                        function()
+                            local status = require("copilot.api").status.data
+                            return status.message or ""
                         end,
-                        color = { fg = "#008080" },
+                        icon = icons.kinds.Copilot,
+                        cond = function()
+                            local ok, clients = pcall(vim.lsp.get_active_clients, { name = "copilot", bufnr = 0 })
+                            return ok and #clients > 0
+                        end,
                     },
                     -- Lsp server name .
                     {
                         function()
-                            local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-                            local clients = vim.lsp.get_active_clients()
-                            for _, client in ipairs(clients) do
-                                local filetypes = client.config.filetypes
-                                if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
-                                    return client.name
+                            if rawget(vim, "lsp") then
+                                for _, client in ipairs(vim.lsp.get_active_clients()) do
+                                    if
+                                        client.attached_buffers[vim.api.nvim_get_current_buf()]
+                                        and client.name ~= "null-ls"
+                                    then
+                                        return client.name
+                                    end
                                 end
                             end
                         end,
-                        cond = function()
-                            return next(vim.lsp.get_active_clients()) ~= nil
-                        end,
-                        icon = " ", -- 
-                        color = { fg = "009999", gui = "bold" },
+                        cond = function() return #(vim.lsp.get_active_clients({ bufnr = 0 })) >0 end,
+                        icon = " ",
+                        color = { fg = "#009999", gui = "bold" },
                         on_click = function()
-                            vim.defer_fn(function()
-                                vim.cmd.LspInfo()
-                            end, 100)
+                            vim.defer_fn(function() vim.cmd.LspInfo() end, 100)
                         end,
                     },
                 },
                 lualine_y = {
+                    "filetype",
                     {
                         "encoding",
                         fmt = string.upper,
+                        icon = ""
                     },
-                    "filetype",
                 },
-                lualine_z = { location, "progress" },
-            },
-            inactive_sections = {
-                lualine_a = {},
-                lualine_b = {},
-                lualine_c = {},
-                lualine_x = {},
-                lualine_y = {},
-                lualine_z = { location },
+                lualine_z = {
+                    -- TODO: make it fixwidth so that my statusline won't wiggle
+                    {
+                        function()
+                            local line = vim.fn.line(".")
+                            local line_count = vim.api.nvim_buf_line_count(0)
+                            local col = vim.fn.virtcol(".")
+
+                            return string.format(':%d/%d :%d', line, line_count, col)
+                        end,
+                        padding = { left = 1, right = 0 },
+                    },
+                },
             },
             winbar = {
-                lualine_a = {},
-                lualine_b = {},
                 lualine_c = {
-                    filename,
+                    {
+                        "filename",
+                        path = 1,
+                        -- shorting_target = 80,
+                        -- color = { bg = colors.bg },
+                    },
                     {
                         function() return require("nvim-navic").get_location() end,
                         cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
                     },
                 },
-                lualine_x = {},
-                lualine_y = {},
-                lualine_z = {},
             },
             inactive_winbar = {
-                lualine_a = {},
-                lualine_b = {},
                 lualine_c = {
+                    {
+                        "filename",
+                        path = 1,
+                        shorting_target = 80,
+                        -- color = { bg = colors.bg },
+                    }
                 },
-                lualine_x = {},
-                lualine_y = {},
-                lualine_z = {},
             },
         }
     end,
     keys = function()
-        local toggle = require("lualine").hide
+        local hide = require("lualine").hide
         local function toggle_lualine(place)
             if vim.g["lualine_" .. place] == nil then
-                toggle({
-                    place = { place },
-                })
+                hide({ place = { place } })
                 vim.g["lualine_" .. place] = 1
             else
-                toggle({
-                    place = { place },
-                    unhide = true,
-                })
+                hide({ place = { place }, unhide = true })
                 vim.g["lualine_" .. place] = nil
             end
         end
         return {
             {
-                "<leader>ll",
-                function()
-                    toggle_lualine("statusline")
-                end,
+                "<leader>ul",
+                function() toggle_lualine("statusline") end,
                 desc = "toggle statusline",
             },
             {
-                "<leader>lw",
-                function()
-                    toggle_lualine("winbar")
-                end,
+                "<leader>ub",
+                function() toggle_lualine("winbar") end,
                 desc = "toggle winbar",
             },
         }

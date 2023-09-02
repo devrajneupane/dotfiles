@@ -1,6 +1,9 @@
+-- Add binaries installed by mason to path.
+vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-    print("Bootstrapping lazy.nvim ..")
+    vim.print("Bootstrapping lazy.nvim ..")
     vim.fn.system({
         "git",
         "clone",
@@ -14,10 +17,7 @@ vim.opt.runtimepath:prepend(lazypath)
 
 -- load lazy
 require("lazy").setup({
-    spec = {
-        { import = "plugins" },
-        { import = "plugins.lsp.inlayhints" },
-    },
+    spec = { { import = "plugins" } },
     install = { colorscheme = { "tokyonight-moon", "habamax" } },
     defaults = { lazy = true },
     concurrency = 10,
@@ -31,18 +31,36 @@ require("lazy").setup({
     performance = {
         rtp = {
             disabled_plugins = {
+                "2html_plugin",
+                "getscript",
+                "getscriptPlugin",
                 "gzip",
+                "logiPat",
                 "matchit",
                 "matchparen",
+                -- TODO: i need to learn more about netrw
+                -- "netrw",
+                -- "netrwFileHandlers",
+                -- "netrwPlugin",
+                -- "netrwSettings",
+                "rplugin",
+                "rrhelper",
+                "tar",
                 "tarPlugin",
                 "tohtml",
                 "tutor",
+                "vimball",
+                "vimballPlugin",
+                "zip",
                 "zipPlugin",
             },
         },
     },
     ui = {
         border = "rounded",
+        icons = {
+            task = "✓",
+        },
         custom_keys = {
             -- plugin spec
             ["<localleader>s"] = function(plugin)
