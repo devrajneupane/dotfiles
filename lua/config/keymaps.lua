@@ -1,16 +1,5 @@
 local utils = require("utils")
-local function map(modes, lhs, rhs, options)
-    local default_options = { silent = true, noremap = true }
-    options = options and vim.tbl_extend("keep", options, default_options) or default_options
-    vim.keymap.set(modes, lhs, rhs, options)
-end
-
---------------------------
--- General key bindings --
---------------------------
-
--- join lines without changing your cursor position
-map("n", "J", "mzJ`z")
+local map = utils.map
 
 -- keep cursor centered
 map("n", "<C-d>", "<C-d>zz")
@@ -18,173 +7,136 @@ map("n", "<C-u>", "<C-u>zz")
 map("n", "n", "nzzzv")
 map("n", "N", "Nzzzv")
 
+map("n", "J", "mzJ`z") -- join lines without changing your cursor position
+map("n", "<leader>qq", "<Cmd>qa!<CR>", { desc = "exit nvim" })
+map("n", "<leader>;", ":= ", { silent = false, desc = "lua cmdline" })
+
 -- Better indenting
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
--- Remap command key
-map({ "n", "v" }, "<leader><leader>", ":")
-map({ "n", "v" }, "<C-P>", ":")
+map("v", "<leader>p", '"_dP', { desc = "paste without loosing clipboard" })
+map({ "n", "v" }, "<leader>dd", [["_d]], { desc = "delete without loosing clipboard" })
 
 -- Move lines
-map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
-map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move line down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line up" })
-map("v", "<A-j>", ":m '>+1<cr>gv=gv", { expr = true, desc = "Move line down" })
-map("v", "<A-k>", ":m '<-2<cr>gv=gv", { expr = true, desc = "Move line up" })
+map("n", "<A-j>", "<Cmd>m .+1<CR>==", { desc = "move line down" })
+map("n", "<A-k>", "<Cmd>m .-2<CR>==", { desc = "move line up" })
+map("i", "<A-j>", "<esc><Cmd>m .+1<CR>==gi", { desc = "move line down" })
+map("i", "<A-k>", "<esc><Cmd>m .-2<CR>==gi", { desc = "move line up" })
+map("v", "<A-j>", ":move '>+1<CR>gv=gv", { desc = "move line down" })
+map("v", "<A-k>", ":move '<-2<CR>gv=gv", { desc = "move line up" })
 
--- Paste without loosing clipboard in visual mode
-map("v", "<leader>p", '"_dP', { desc = "paste without loosing clipboard" })
+-- Execute macro over a visual region
+map('x', '@', function() return ":norm⋅@" .. vim.fn.getcharstr() .. "<cr>" end, { expr = true })
 
--- Yank into system clipboard
-map("n", "<leader>Y", [["+Y]])
-map({ "n", "v" }, "<leader>y", [["+y]])
-map({ "n", "v" }, "<leader>B", [["_d]])
+-- Saner behavior of n and N
+map({ "n", "x", "o" }, "n", "'Nn'[v:searchforward]", { expr = true, desc = "next search result" })
+map({ "n", "x", "o" }, "N", "'nN'[v:searchforward]", { expr = true, desc = "prev search result" })
 
--- quick fix
-map("n", "<leader>K", "<cmd>cnext<CR>zz", { desc = "display the next error" })
-map("n", "<leader>J", "<cmd>cprev<CR>zz", { desc = "display the previous error" })
-map("n", "<leader>k", "<cmd>lnext<CR>zz")
-map("n", "<leader>j", "<cmd>lprev<CR>zz")
+-- Terminal
+map("t", "<C-q>", "<C-\\><C-n><C-w>c", { desc = "close terminal" })
+map("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "focus top window" })
+map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "escape terminal mode" })
+
+-- Yank/Put with system clipboard
+-- TODO: revisit yanky.nvim
+map("n", "gY", [["+Y]], {desc = "yank line to system clipboard"})
+map("x" , "gy", '"+y', {desc = "yank motion/selection to system clipboard"})
+map({ "n", "x" }, "gP", '"+p', {desc = "yank motion/selection to system clipboard"})
 
 -- Copy current file path
-map({ "n", "v" }, "<leader>cp", '<cmd>let @+ = expand("%")<CR>', { desc = "copy relative path of current file" })
-map({ "n", "v" }, "<leader>cP", '<cmd>let @+ = expand("%:p")<CR>', { desc = "copy absolute path of current file" })
+map({ "n", "v" }, "<leader>yp", '<Cmd>let @+ = expand("%")<CR>', { expr = true, desc = "yank relative path" })
+map({ "n", "v" }, "<leader>yP", '<Cmd>let @+ = expand("%:p")<CR>', { expr = true, desc = "yank absolute path" })
+map({ "n", "v" }, "<leader>yf", '<Cmd>let @+ = expand("%:t")<CR>', { expr = true, desc = "yank filename" })
+
+-- quick fix
+map("n", "<leader>j", "<Cmd>cprev<CR>zz", { desc = "prev error" })
+map("n", "<leader>k", "<Cmd>cnext<CR>zz", { desc = "next error" })
+map("n", "<leader>K", "<Cmd>lnext<CR>zz", { desc = "next location" })
+map("n", "<leader>J", "<Cmd>lprev<CR>zz", { desc = "next location" })
 
 -- Find and Replace
 map(
     { "n", "v" },
-    "<leader>s",
+    "<leader>sr",
     [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-    { desc = "Find and Replace word under cursor" }
+    { silent = false, desc = "replace word under cursor" }
 )
+map('x', 'g/', '<esc>/\\%V', { silent = false, desc = 'search inside visual selection' })
 
--- Make current buffer executable
-map("n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "make current file executable" })
+-- windows
+map("n", "<C-k>", "<C-w>k", { desc = "focus top window" })
+map("n", "<C-j>", "<C-w>j", { desc = "focus bottom window" })
+map("n", "<C-h>", "<C-w>h", { desc = "focus left window" })
+map("n", "<C-l>", "<C-w>l", { desc = "focus right window" })
+map("n", "<A-<>", "<Cmd>vertical resize +5<CR>", {desc = "vertical resize ➡"})
+map("n", "<A->>", "<Cmd>vertical resize -5<CR>", {desc = "vertical resize ⬅"})
+map("n", "<A-,>", "<Cmd>horizontal resize -5<CR>", {desc = "horizontal resize ⬆"})
+map("n", "<A-.>", "<Cmd>horizontal resize +5<CR>", {desc = "horizontal resize ⬇"})
+map("n", "<leader>wh", "<Cmd>wincmd H<CR>", {desc = "move current window to right"})
+map("n", "<leader>wl", "<Cmd>wincmd L<CR>", {desc = "move current window to left"})
+map("n", "<leader>wj", "<Cmd>wincmd J<CR>", {desc = "move current window to down"})
+map("n", "<leader>wk", "<Cmd>wincmd K<CR>", {desc = "move current window to up"})
+map("n", "<leader>wo", "<Cmd>wincmd o<CR>", {desc = "close all other windows"})
 
--- Navigate buffers
-map("n", "<C-M-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "<C-M-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
-map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- buffers
+map("n", "<leader>be", "<Cmd>edit!<CR>", { desc = "reload buffer" })
+map("n", "<leader>bn", "<Cmd>enew<CR>", { desc = "new buffer" })
+map("n", "<leader>bv", "<Cmd>vnew<CR>", { desc = "new buffer in vertical split" })
+map("n", "<leader>br", "<Cmd>buffer #<CR>", { desc = "reopen closed buffer" })
+map("n", "<leader>bs", "<Cmd>w!<CR>", { desc = "save buffer" })
+map({ "n", "v", "i" }, "<C-s>", "<Cmd>w!<CR>", { desc = "save buffer" })
+map("n", "<leader>X", "<Cmd>Hashbang<CR>", { desc = "add hashbang" })
+-- map("n", "<leader>bw", cmd"%bdelete<Bar>edit#<Bar>bdelete#", { desc = "close other bufffers " })
 
--- Save file
-map({ "i", "v", "n" }, "<C-s>", "<cmd>w!<cr><esc>", { desc = "Save file" })
+-- tabs
+map("n", "<Leader>tn", "<Cmd>tabnew<CR>", { desc = "create new tab" })
+map("n", "<Leader>tc", "<Cmd>tabclose<CR>", { desc = "close current tab" })
+
+-- Go to tab number
+-- FIX: doesn't work
+for _, i in ipairs(vim.api.nvim_list_tabpages()) do
+    map("n", "<Leader>t"..i, "<Cmd>tabnext"..i.."<CR>", { desc = "go to tab"..i})
+end
 
 -- Disable the search highlight when hitting esc.
 map("n", "<Esc>", "<Cmd>noh<CR>")
 
----------------
--- Telescope --
----------------
+map("i", "<C-z>", "<C-o>u") -- Undo in insert mode.
+map("i", "<C-A>", "<ESC>I") -- Mimic shell movements
+map("i", "<S-Enter>", "<C-o>O") -- new line above current line
+map("i", "<C-Enter>", "<C-o>o") -- new line below current line
 
--- Search for recent files.
-map({ "n", "v" }, "<leader>fr", "<Cmd>Telescope oldfiles<CR>")
+-- Add undo break-points
+map("i", ",", ",<C-g>u")
+map("i", ".", ".<C-g>u")
+map("i", ";", ";<C-g>u")
+map("i", ":", ":<C-g>u")
 
--- Buffers.
-map({ "n", "v" }, "<leader>fb", "<Cmd>Telescope buffers<CR>")
-
--- Resizing windows.
-map("n", "<A-.>", "<Cmd>vertical resize +5<CR>")
-map("n", "<A-,>", "<Cmd>vertical resize -5<CR>")
-map("n", "<A-<>", "<Cmd>horizontal resize +5<CR>")
-map("n", "<A->>", "<Cmd>horizontal resize -5<CR>")
-
--- CLose buffer
-map({ "i", "v", "n" }, "<C-M-w>", "<cmd>bd!<cr><esc>", { desc = "Close buffer" })
-
--- Tab
-map("n", "<Leader>tn", ":tabnew<CR>")
-map("n", "<Leader>tc", ":tabclose<CR>")
-
--- Undo in insert mode.
-map("i", "<c-z>", "<c-o>u")
-
--- Exit neovim
-map({ "i", "v", "n" }, "<M-q>", "<cmd>qa<cr>", { desc = "Exit Vim" })
--- map({ "i", "v", "n" }, "<C-M-q>", "<cmd>qa!<cr>", { desc = "Exit without saving any changes" })
-
--- toggle relative numbering
-map({ "n", "v" }, "<leader>ln", "<Cmd>set rnu!<CR>", { desc = "toggle relativenumber" })
-
----------
--- LSP --
----------
-
-local opts = { remap = false }
-
--- displays hover information about the symbol under the cursor
-map("n", "K", function()
-    vim.lsp.buf.hover()
-end, { remap = false })
-
--- jumps to the definition of the symbol under the cursor
-map("n", "gd", function()
-    vim.lsp.buf.definition()
-end)
-
--- jumps to the declaration of the symbol under the cursor
-map("n", "gD", function()
-    vim.lsp.buf.declaration()
-end)
-
--- Lists all the references to the symbol under the cursor
-map("n", "gr", function()
-    vim.lsp.buf.references()
-end, opts)
-
--- Selects a code action available at the current cursor position
-map("n", "<leader>gc", function()
-    vim.lsp.buf.code_action()
-end, opts)
-
--- Displays signature information about the symbol under the cursor
-map("n", "<Leader>gh", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { desc = "display signature information" })
-
--- Lists all the implementations for the symbol under the cursor
-map("n", "<Leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-
--- Jumps to the definition of the type of the symbol under the cursor
-map("n", "<Leader>go", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-
--- Renames all references to the symbol under the cursor
-map("n", "RR", "<cmd>lua vim.lsp.buf.rename()<CR>", { silent = true })
-
--- Lists all symbols in the current workspace in the quickfix window.
-map("n", "<leader>ws", function()
-    vim.lsp.buf.workspace_symbol()
-end, opts)
-
--- LSP format
-map("n", "<leader>ft", function()
-    vim.lsp.buf.format({ async = false })
-    vim.api.nvim_command("write")
-end, { desc = "Lsp formatting" })
+-- REF: https://stackoverflow.com/a/16481737
+map("n", "<leader>cz", "[s1z=", { desc = "correct latest misspelled word" })
+map("i", "<M-s>", "<C-g>u<Esc>[s1z=`]a<C-g>u", { desc = "correct latest misspelled word" })
 
 -- Open Lazy
-map({ "n", "v" }, "<leader>L", "<Cmd>Lazy<CR>", { desc = "open lazy window" })
+map("n", "<leader>L", "<Cmd>Lazy<CR>", { desc = "Lazy" })
 
--- Open Mason graphical status window.
-map({ "n", "v" }, "<leader>M", "<Cmd>Mason<CR>", { desc = "open mason window" })
+-- add the date and time (not a fan of F-keys btw)
+map("n", "<F3>", "i<C-R>=strftime('%Y-%m-%d %a %I:%M %p')<CR><Esc>", { desc = "add current date and time" })
+map("i", "<F3>", "<C-R>=strftime('%Y-%m-%d %a %I:%M %p')<CR>", { desc = "add current date and time" })
 
--- Mimic shell movements
-map("i", "<C-E>", "<ESC>A")
-map("i", "<C-A>", "<ESC>I")
-
--- Sessions.
-local session_file = vim.fn.stdpath("data") .. "/sessions/session.vim"
-map("n", "<leader>S", ":mksession!" .. session_file .. "<CR>", { desc = "save current session" })
-map("n", "<leader>R", ":source" .. session_file .. "<CR>", { desc = "reload last session" })
+-- motion to select entire buffer
+-- e.g. dA = delete whole buffer, yA = copy whole buffer
+-- TODO: A as motion messed up bunch of plugins
+-- map('o', 'A', ':<C-U>normal! mzggVG<CR>`z')
+-- map('x', 'A', ':<C-U>normal! ggVG<CR>')
 
 -- toggle options
-map("n", "<leader>tw", function()
-    utils.toggle("wrap")
-end, { desc = "Toggle Word Wrap" })
-map("n", "<leader>ts", function()
-    utils.toggle("spell")
-end, { desc = "Toggle Spelling" })
-map("n", "<leader>tl", function()
-    utils.toggle("relativenumber")
-end, { desc = "Toggle Line Numbers" })
-map("n", "<leader>td", utils.toggle_diagnostics, { desc = "Toggle Diagnostics" })
-map("n", "<leader>q", utils.toggle_quickfix, { desc = "Toggle Quickfix Window" })
+map("n", "<leader>un", function() utils.toggle("relativenumber") end, { desc = "toggle relativenumber" })
+map("n", "<leader>uw", function() utils.toggle("wrap") end, { desc = "toggle wrap" })
+map("n", "<leader>us", function() utils.toggle("spell") end, { desc = "toggle spell" })
+map("n", "<leader>ui", vim.show_pos, { desc = "inspect pos" })
+map("n", "<leader>ud", utils.toggle_diagnostics, { desc = "toggle diagnostics" })
+map("n", "<leader>uq", utils.toggle_quickfix, { desc = "toggle quickfix window" })
+map("n", "<leader>ur", vim.cmd.mode, { desc = "clear and redraw screen" })
+
+map("n", "dd", function() return vim.api.nvim_get_current_line():match("^%s*$") and '"_dd' or "dd" end, { expr = true, desc = "smart dd" })
