@@ -1,0 +1,16 @@
+gui:
+  returnImmediately: true
+  theme:
+    inactiveBorderColor:
+      - cyan
+    selectedLineBgColor:
+      - reverse
+  showBottomLine: false
+  expandFocusedSidePanel: true
+  containerStatusHealthStyle: "icon"
+customCommands:
+  containers:
+    - name: bash
+      attach: true
+      command: "docker exec -it {{ .Container.ID }} bash"
+      serviceNames: []
