@@ -1,6 +1,12 @@
-notARepository: 'quit'
+notARepository: "quit"
 os:
   editPreset: nvim
+
+git:
+  paging:
+    colorArg: always
+    useConfig: true
+
 gui:
   showBottomLine: false
   theme:
@@ -12,4 +18,4 @@ gui:
     unstagedChangesColor:
       - yellow
   border: rounded
-  nerdFontsVersion: '3'
+  nerdFontsVersion: "3"
