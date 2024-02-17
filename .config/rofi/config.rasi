@@ -1,0 +1,90 @@
+configuration {
+    /*---------- General setting ----------*/
+    modi: "drun,run,filebrowser,window,windowcd,emoji,paste:~/.local/bin/clipboard";
+    case-sensitive: false;
+    cycle: true;
+    // cache-dir: "~/.cache/rofi";
+    scroll-method: 1; // 0
+    normalize-match: true;
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    markup: true;
+    steal-focus: true;
+
+    /*---------- Matching setting ----------*/
+    matching: "fuzzy";
+    tokenize: true;
+
+    /*---------- SSH settings ----------*/
+    ssh-client: "ssh";
+    ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
+    parse-hosts: true;
+    parse-known-hosts: true;
+
+    /*---------- Drun settings ----------*/
+    drun-categories: "";
+    drun-match-fields: "name,generic,exec,categories,keywords";
+    drun-display-format: "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+    drun-show-actions: false;
+    drun-url-launcher: "xdg-open";
+    drun-use-desktop-cache: false;
+    drun-reload-desktop-cache: false;
+    drun {
+        /** Parse user desktop files. */
+        parse-user:   true;
+        /** Parse system desktop files. */
+        parse-system: true;
+    }
+
+    /*---------- Run settings ----------*/
+    run-command: "{cmd}";
+    run-list-command: "";
+    run-shell-command: "{terminal} -e {cmd}";
+
+    /*---------- Fallback Icon ----------*/
+    run,drun {
+        fallback-icon: "application-x-addon";
+    }
+
+    /*---------- Window switcher settings ----------*/
+    window-command: "wmctrl -i -R {window}";
+    window-format: "{w} - {c} - {t:0}";
+    window-thumbnail: false;
+
+    /*---------- History and Sorting ----------*/
+    sorting-method: "fzf";
+
+    /*---------- Display setting ----------*/
+    display-window: "Windows";
+    display-windowcd: "Window CD";
+    display-run: "Run";
+    display-ssh: "SSH";
+    display-drun: "Apps";
+    display-combi: "Combi";
+    display-keys: "Keys";
+    display-filebrowser: "Files";
+
+    /*---------- Misc setting ----------*/
+    terminal: "rofi-sensible-terminal";
+    font: "JetBrainsMono Nerd Font 12";
+    sort: true;
+    threads: 0;
+    click-to-exit: true;
+/*  ignored-prefixes: "";*/
+
+    /*---------- File browser settings ----------*/
+    filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+    }
+
+    /*---------- Other settings ----------*/
+    timeout {
+      action: "kb-cancel";
+      delay:  0;
+    }
+
+    /*---------- Keybindings ----------*/
+    kb-mode-next: "Shift+Right,Control+Tab,Alt+j";
+    kb-mode-previous: "Shift+Left,Control+ISO_Left_Tab,Alt+k";
+}
