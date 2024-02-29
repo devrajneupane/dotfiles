@@ -17,7 +17,7 @@ return {
             javascript = { "eslint_d" },
             javascriptreact = { "eslint_d" },
             markdown = { "markdownlint" },
-            lua = { "luacheck" },
+            lua = { "selene" },
             -- python = { "mypy" },
             -- rst = { "rstlint" },
             sh = { "shellcheck" },
