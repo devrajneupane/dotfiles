@@ -3,13 +3,13 @@ return {
     {
         "nvim-treesitter/nvim-treesitter-context",
         event = "BufReadPost",
+        init = function()
+            require('utils.highlights')
+        end,
         opts = {
             mode = "topline",
             multiline_threshold = 4,
             separator = '─', -- ─
-            on_attach = function()
-                vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
-            end
         },
         keys = {
             {"<leader>cx", function() require('treesitter-context').toggle() end, desc = "toggle code context"},
