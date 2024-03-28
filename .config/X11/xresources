@@ -3,15 +3,16 @@
 ! Font configuration for application without fontconfig support
 Xft.autohint: 0
 Xft.lcdfilter: lcddefault
-Xft.hintstyle: hintfull
+Xft.hintstyle: hintslight
 Xft.hinting: 1
 Xft.antialias: 1
 Xft.rgba: rgb
 
-Xcursor.theme: capitaine-cursors
+Xcursor.theme: Bibata-Modern-Classic
 Xcursor.size: 16
 
 ! nsxiv(1)
 bar.font: JetBrainsMono Nerd Font
 
 #include ".local/share/nvim/lazy/tokyonight.nvim/extras/xresources/tokyonight_storm.Xresources"
+! vim: ft=xdefaults
