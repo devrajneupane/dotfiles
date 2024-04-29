@@ -30,26 +30,16 @@ return {
                 layout_strategy = "flex",
                 sorting_strategy = "ascending",
                 selection_caret = ' ',
-                path_display = { "truncate" }, -- truncate
-                -- file_ignore_patterns = { "^%.git/", "^node_modules/" }, -- :h telescope.defaults.file_ignore_patterns*
-                file_ignore_patterns = {
-                    ".*%.png$",
-                    ".*%.jpe?g$",
-                    ".*%.gif$",
-                    ".*%.wav$",
-                    ".*%.aiff$",
-                    ".*%.dll$",
-                    ".*%.pdf$",
-                    ".*%.pdb$",
-                    ".*%.mdb$",
-                    ".*%.so$",
-                    ".*%.swp$",
-                    ".*%.zip$",
-                    ".*%.gz$",
-                    ".*%.bz2$",
-                    ".*%.meta",
-                    ".*%.cache",
-                    ".*/%.git/",
+                -- path_display = function(_, path)
+                --     local tail = vim.fs.basename(path)
+                --     local parent = vim.fs.dirname(path)
+                --     if parent == "." then return tail end
+                --     return string.format("%s\t\t%s", tail, parent)
+                -- end,
+                path_display = {
+                    filename_first = {
+                        reverse_directories = false
+                    }
                 },
                 dynamic_preview_title = true,
                 cycle_layout_list = { "horizontal", "vertical", "center", "cursor", "bottom_pane" },
