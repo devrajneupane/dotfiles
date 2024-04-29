@@ -21,34 +21,28 @@ M.on_attach = function(client, bufnr)
     local methods = vim.lsp.protocol.Methods
     local enabled = false -- disabling inlayhint at startup
 
-    if vim.fn.has('nvim-0.10') ==1 then
+    if vim.fn.has("nvim-0.10") == 1 then
         if client.supports_method(methods.textDocument_inlayHint) then
             local inlay_hints_group = require("utils").augroup("toggle_inalay_hints")
 
             -- Initial inlay hint display.
             vim.defer_fn(function()
-                -- local mode = vim.api.nvim_get_mode().mode
-                vim.lsp.inlay_hint.enable(bufnr, enabled)
+                vim.lsp.inlay_hint.enable(enabled, {bufnr = bufnr})
             end, 500)
 
             vim.api.nvim_create_autocmd("InsertEnter", {
                 group = inlay_hints_group,
                 desc = "enable inlay hints",
                 buffer = bufnr,
-                callback = function()
-                    vim.lsp.inlay_hint.enable(bufnr, false)
-                end,
+                callback = function() vim.lsp.inlay_hint.enable(false, {bufnr = bufnr}) end,
             })
             vim.api.nvim_create_autocmd("InsertLeave", {
                 group = inlay_hints_group,
                 desc = "disable inlay hints",
                 buffer = bufnr,
-                callback = function()
-                    vim.lsp.inlay_hint.enable(bufnr, enabled)
-                end,
+                callback = function() vim.lsp.inlay_hint.enable(enabled, {bufnr = bufnr}) end,
             })
         end
-
     end
 
     -- treesitter-refactor doing the job for now
@@ -150,8 +144,9 @@ M.on_attach = function(client, bufnr)
             "<leader>uh",
             function()
                 -- local enabled = vim.lsp.inlay_hint.is_enabled(0) ~= true
-                enabled = enabled ~= true
-                vim.lsp.inlay_hint.enable(0, enabled)
+                -- enabled = enabled ~= true
+                -- vim.lsp.inlay_hint.enable(0, enabled)
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
             end,
             { desc = "toggle inlay hints" },
         })
