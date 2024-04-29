@@ -26,7 +26,7 @@ return {
         dependencies = {
             "windwp/nvim-ts-autotag",
             "andymass/vim-matchup",
-            "nvim-treesitter/nvim-treesitter-refactor",
+            -- "nvim-treesitter/nvim-treesitter-refactor",
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
         init = function(plugin)
@@ -184,32 +184,32 @@ return {
                     scope_incremental = "<M-CR>",
                 },
             },
-            refactor = {
-                -- alternative RRethy/vim-illuminate
-                highlight_definitions = {
-                    enable = true,
-                    -- Set to false if you have an `updatetime` of ~100.
-                    clear_on_cursor_move = true,
-                },
-                highlight_current_scope = { enable = false }, -- kinda nice but indentline is okay
-                smart_rename = {
-                    enable = true,
-                    keymaps = {
-                        -- smart_rename = "grr",
-                        smart_rename = "<leader>rs",
-                    },
-                },
-                navigation = {
-                    enable = true,
-                    keymaps = {
-                        goto_definition_lsp_fallback = "gd", -- gnd
-                        list_definitions = "gl", -- gnD
-                        list_definitions_toc = "gO",
-                        goto_next_usage = "]]", -- <A-n>
-                        goto_previous_usage = "[[", -- <A-p>
-                    },
-                },
-            },
+            -- refactor = {
+            --     -- alternative RRethy/vim-illuminate
+            --     highlight_definitions = {
+            --         enable = true,
+            --         -- Set to false if you have an `updatetime` of ~100.
+            --         clear_on_cursor_move = true,
+            --     },
+            --     highlight_current_scope = { enable = false }, -- kinda nice but indentline is okay
+            --     smart_rename = {
+            --         enable = true,
+            --         keymaps = {
+            --             -- smart_rename = "grr",
+            --             smart_rename = "<leader>rs",
+            --         },
+            --     },
+            --     navigation = {
+            --         enable = true,
+            --         keymaps = {
+            --             goto_definition_lsp_fallback = "gd", -- gnd
+            --             list_definitions = "gl", -- gnD
+            --             list_definitions_toc = "gO",
+            --             goto_next_usage = "]]", -- <A-n>
+            --             goto_previous_usage = "[[", -- <A-p>
+            --         },
+            --     },
+            -- },
         },
         config = function(_, opts)
             require("nvim-treesitter.configs").setup(opts)

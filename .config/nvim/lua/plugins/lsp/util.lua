@@ -45,22 +45,21 @@ M.on_attach = function(client, bufnr)
         end
     end
 
-    -- treesitter-refactor doing the job for now
-    -- if client.supports_method(methods.textDocument_documentHighlight) then
-    --     local augroup = require("utils").augroup("cursor_highlights",false )
-    --     vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
-    --         group = augroup,
-    --         desc = 'highlight references under the cursor',
-    --         buffer = bufnr,
-    --         callback = vim.lsp.buf.document_highlight,
-    --     })
-    --     vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
-    --         group = augroup,
-    --         desc = 'clear highlight references',
-    --         buffer = bufnr,
-    --         callback = vim.lsp.buf.clear_references,
-    --     })
-    -- end
+    if client.supports_method(methods.textDocument_documentHighlight) then
+        local augroup = require("utils").augroup("cursor_highlights",false )
+        vim.api.nvim_create_autocmd({ 'CursorHold', 'InsertLeave', 'BufEnter' }, {
+            group = augroup,
+            desc = 'highlight references under the cursor',
+            buffer = bufnr,
+            callback = vim.lsp.buf.document_highlight,
+        })
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave' }, {
+            group = augroup,
+            desc = 'clear highlight references',
+            buffer = bufnr,
+            callback = vim.lsp.buf.clear_references,
+        })
+    end
 
     local mappings = {
         -- { "K", vim.lsp.buf.hover, { desc = "display hover information" } },
