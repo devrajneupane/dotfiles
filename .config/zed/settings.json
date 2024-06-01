@@ -1,0 +1,42 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run the `open default settings` command
+// from the command palette or from `Zed` application menu.
+{
+  "theme": "Rosé Pine",
+  // Whether to enable vim modes and key bindings.
+  "vim_mode": true,
+  // The default font size for text in the UI
+  "ui_font_size": 16,
+  // The default font size for text in the editor
+  "buffer_font_size": 16,
+  // The name of a font to use for rendering text in the editor
+  "buffer_font_family": "FiraCode Nerd Font",
+  "indent_guides": {
+    /// Determines how indent guides are colored.
+    "coloring": "indent_aware"
+  },
+  "relative_line_numbers": true,
+  // Inlay hint related settings
+  "inlay_hints": {
+    // Global switch to toggle hints on and off, switched off by default.
+    "enabled": true
+  },
+  // When to automatically save edited buffers. This setting can
+  "autosave": "on_window_change",
+  // Control what info is collected by Zed.
+  "telemetry": {
+    // Send debug info like crash reports.
+    "diagnostics": false,
+    // Send anonymized usage data like what languages you're using Zed with.
+    "metrics": false
+  },
+  // Vim settings
+  "vim": {
+    "use_smartcase_find": true
+  }
+}
