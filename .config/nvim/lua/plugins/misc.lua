@@ -4,21 +4,6 @@ return {
     { "kovetskiy/sxhkd-vim", ft = "sxhkd" },
     { "justinsgithub/wezterm-types" },
 
-    -- Run code blocks independently of the file
-    {
-        "michaelb/sniprun",
-        build = "sh ./install.sh",
-        cmd = { "SnipRun", "SnipReset", "SnipInfo" },
-        opts = {
-            selected_interpreters = { "Bash_original", "Lua_nvim", "Python3_jupyter", "Python3_original" },
-            repl_enable = { "Python3_original", "Python3_original" },
-            display = { "Classic", "VirtualTextOk" },
-            live_mode_toggle = "enable",
-        },
-        keys = {
-            { "<leader>si", "<Cmd>SnipInfo<CR>", desc = "sniprun info" },
-        },
-    },
 
     -- undo history visualizer
     {
@@ -196,28 +181,6 @@ return {
                 end,
                 mode = { "n", "x" },
                 desc = "structural search and replace",
-            },
-        },
-    },
-
-    -- live-command
-    {
-        "smjonas/live-command.nvim",
-        enabled = false, -- let's see how much i'm gonna miss it
-        main = "live-command",
-        event = "CmdlineEnter",
-        cmd = { "Norm", "Reg" },
-        opts = {
-            commands = {
-                Norm = { cmd = "norm" },
-                Reg = {
-                    cmd = "norm",
-                    -- This will transform ":5Reg a" into ":norm 5@a"
-                    args = function(opts)
-                        return (opts.count == -1 and "" or opts.count) .. "@" .. opts.args
-                    end,
-                    range = "",
-                },
             },
         },
     },

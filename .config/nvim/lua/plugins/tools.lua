@@ -163,31 +163,10 @@ return {
                 "<leader>cJ",
                 function () require('treesj').toggle({ split = { recursive = true } }) end,
                 desc = "split/join recursively",
-            }
-        },
-    },
-
-    -- Markdown preview
-    {
-        "toppair/peek.nvim",
-        build = "deno task --quiet build:fast",
-        enabled = false,
-        keys = {
-            {
-                "<leader>mp",
-                function()
-                    local peek = require("peek")
-                    if peek.is_open() then
-                        peek.close()
-                    else
-                        peek.open()
-                    end
-                end,
-                ft = "markdown",
-                desc = "peek: markdown preview"
             },
         },
     },
+
     -- Markdown preview
     -- TODO: would be better if preview window open as PWA
     {

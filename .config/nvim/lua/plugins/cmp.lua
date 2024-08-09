@@ -10,7 +10,6 @@ return {
         "hrsh7th/cmp-cmdline", -- NOTE: Cmdline popup doesn't seem to cooperate with noice
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-path",
-        "hrsh7th/cmp-nvim-lua",
         "saadparwaiz1/cmp_luasnip",
     },
     opts = function()
@@ -64,7 +63,6 @@ return {
                         dap = "[DAP]",
                         luasnip = "[SNIP]",
                         nvim_lsp = "[LSP]",
-                        nvim_lua = "[API]",
                         path = "[PATH]",
                         ["vim-dadbod-completion"] = "[DB]",
                     }
@@ -104,8 +102,6 @@ return {
                         end,
                     },
                 },
-                { name = "nvim_lua" },
-                { name = "path" },
             }),
             sorting = {
                 comparators = {
@@ -262,7 +258,6 @@ return {
                 },
                 { name = "path" },
             }, {
-                { name = "nvim_lua" },
                 { name = "buffer" },
             }),
         })
