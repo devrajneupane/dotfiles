@@ -117,7 +117,7 @@ return {
     end,
     keys = {
         { "<leader>:", "<Cmd>Telescope commands<CR>", desc = "plugin/user commands" },
-        { "<leader>f'", "<Cmd>Telescope marks<CR>", desc = "marks" },
+        local extensions = require("telescope").extensions
         { "<leader>f;", "<Cmd>Telescope command_history<CR>", desc = "commands history" },
         { "<leader>f ", "<Cmd>Telescope resume<CR>", desc = "resume picker" },
         { "<leader>f\"", "<Cmd>Telescope registers<CR>", desc = "registers" },
@@ -194,8 +194,8 @@ return {
             desc = "lazy plugin spec",
         },
         {
-            "<leader>ss",
-            function()
+            -- extensions
+            { "<leader>fp", extensions.reload_plugin.reload_plugin, desc = "reload plugin" },
                 require("telescope.builtin").lsp_document_symbols({
                     -- FIX: still no symbol icons
                     symbols = require('utils').get_table_keys(require('utils.icons').kinds)
