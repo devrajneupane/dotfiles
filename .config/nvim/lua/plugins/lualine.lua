@@ -3,7 +3,7 @@ return {
     "nvim-lualine/lualine.nvim",
     event = {"BufReadPost"},
     dependencies = {
-        { "nvim-tree/nvim-web-devicons" },
+        { "echasnovski/mini.icons" },
     },
     opts = function()
         -- local colors = require("tokyonight.colors").setup()

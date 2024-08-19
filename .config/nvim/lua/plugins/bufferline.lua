@@ -5,7 +5,7 @@ return {
         event = "UIEnter",
         dependencies = {
             { "tiagovla/scope.nvim", config = true }, -- scopes buffers to tabs
-            { "nvim-tree/nvim-web-devicons", lazy = true },
+            { "echasnovski/mini.icons" },
         },
         config = function()
             local bufferline = require('bufferline')
