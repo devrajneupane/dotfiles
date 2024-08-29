@@ -27,6 +27,9 @@ export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
 # See https://specifications.freedesktop.org/menu-spec/latest/apb.html
 export XDG_CURRENT_DESKTOP="Qtile"
 
+# Firefox Enable touchscreen gestures
+export MOZ_USE_XINPUT2=1
+
 # colored password prompt
 SUDO_PROMPT="$(tput setaf 1 bold)Password:$(tput sgr0) " && export SUDO_PROMPT
 # Move readline config
