@@ -180,3 +180,33 @@ vim.api.nvim_create_user_command("DiffOrig", function()
         end, { buffer = buf })
     end
 end, { desc = "diff original file" })
+
+local tab_group = vim.api.nvim_create_augroup("tabs_keybind", { clear = true })
+vim.api.nvim_create_autocmd("TabNew", {
+    group = tab_group,
+    callback = function()
+        local tabpages = vim.api.nvim_list_tabpages()
+        local count = #tabpages
+        vim.keymap.set("n", "<leader>1", "<Cmd>normal 1gt<CR>", { desc = "go to tab 1" })
+        vim.keymap.set(
+            "n",
+            "<leader>" .. count,
+            string.format("<Cmd>normal %sgt<CR>", count),
+            { desc = "go to tab " .. count }
+        )
+    end,
+    desc = "add keybind to navigate between tabs",
+})
+vim.api.nvim_create_autocmd("TabClosed", {
+    group = tab_group,
+    callback = function()
+        local tabpages = vim.api.nvim_list_tabpages()
+        local count = #tabpages + 1
+        vim.keymap.del("n", "<leader>" .. count)
+        if count == 2 then
+            -- also delete last keybind for tab navigation
+            vim.keymap.del("n", "<leader>1")
+        end
+    end,
+    desc = "remove keybind for tabpages",
+})
