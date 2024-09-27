@@ -146,8 +146,8 @@ PATH=$(sort <<< $(echo $PATH | tr ":" "\n") | uniq | tr '\n' ':')
 
 
 # fzf keybindings && completion
-[ -s "/usr/share/fzf/key-bindings.bash" ] && \. "/usr/share/fzf/key-bindings.bash"
-[ -s "/usr/share/fzf/completion.bash" ] && \. "/usr/share/fzf/completion.bash"
+# Prevent C-t and M-c from being bound to fzf functions
+eval "$(fzf --bash | grep -Ev 'emacs-standard.*(\\C-t|\\ec)')"
 
 # initialize zoxide
 eval "$(zoxide init bash)"
