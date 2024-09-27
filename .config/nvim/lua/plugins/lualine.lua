@@ -12,6 +12,19 @@ return {
         local lualine_require = require("lualine_require")
         lualine_require.require = require
 
+        -- Override location component
+        -- TODO: make it bold and italic
+        package.loaded["lualine.components.location"] = function()
+            local line = vim.fn.line(".")
+            local line_count = vim.api.nvim_buf_line_count(0)
+            local col = vim.fn.virtcol(".")
+
+            return string.format("l:%d/%d c:%d", line, line_count, col)
+        end
+
+        -- Disable progress
+        package.loaded["lualine.components.progress"] = function() return "" end
+
         return {
             options = {
                 theme = 'auto',
