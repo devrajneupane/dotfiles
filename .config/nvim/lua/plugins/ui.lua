@@ -1,35 +1,4 @@
 return {
-    -- auto-resize windows
-    {
-        "anuvyklack/windows.nvim",
-        event = "WinNew",
-        dependencies = {
-            { "anuvyklack/middleclass" },
-            -- { "anuvyklack/animation.nvim" },
-        },
-        config = function()
-            vim.o.winwidth = 5
-            vim.o.equalalways = false
-            require("windows").setup({
-                animation = { enable = false, duration = 150 },
-            })
-        end,
-        keys = {
-            { "<leader>wm", "<Cmd>WindowsMaximize<CR>", desc = "maximize current window" },
-            { "<leader>w-", "<Cmd>WindowsMaximizeVertically<CR>", desc = "maximize window vertically" },
-            { "<leader>w|", "<Cmd>WindowsMaximizeHorizontally<CR>", desc = "maximize  window horizontally" },
-            { "<leader>w=", "<Cmd>WindowsEqualize<CR>", desc = "equalize all windows" },
-            {
-                "<leader>ww",
-                function()
-                    require("utils").notify("autowidth toggled", "INFO", { title = "Windows.nvim" })
-                    return "<Cmd>WindowsToggleAutowidth<CR>"
-                end,
-                desc = "toggle windows auto width",
-            },
-        },
-    },
-
     -- configurable 'statuscolumn' and click handlers
     {
         "luukvbaal/statuscol.nvim",
@@ -175,37 +144,6 @@ return {
                 desc = "jump to current context",
             },
         },
-    },
-
-    -- add additional highlights buffers
-    {
-        "folke/paint.nvim",
-        event = "BufReadPre",
-        opts = {
-            highlights = {
-                {
-                    filter = { filetype = "lua" },
-                    pattern = "%s*%-%-%-%s*(@%w+)",
-                    hl = "Constant",
-                },
-            },
-        },
-    },
-
-    -- dims inactive portions of the code
-    {
-        "folke/twilight.nvim",
-        cmd = { "Twilight", "TwilightEnable", "TwilightDisable" },
-        keys = {
-            { "<leader>uT", "<Cmd>Twilight<CR>", desc = "toggle twilight" },
-        },
-    },
-
-    -- zen-mode
-    {
-        "folke/zen-mode.nvim",
-        cmd = "ZenMode",
-        keys = { { "<leader>z", "<cmd>ZenMode<cr>", desc = "zen mode" } },
     },
 
     -- improve the default vim.ui interfaces
