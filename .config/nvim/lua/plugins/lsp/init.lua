@@ -246,7 +246,32 @@ return {
                         yaml = {
                             hover = true,
                             completion = true,
-                            validate = true,
+                            customTags = {
+                                -- Partial Cloudformation support
+                                -- See: https://github.com/redhat-developer/yaml-language-server/issues/77#issuecomment-511768680
+                                "!FindInMap mappping",
+                                "!FindInMap scalar",
+                                "!FindInMap sequence",
+                                "!GetAtt mapping",
+                                "!GetAtt scalar",
+                                "!GetAtt sequence",
+                                "!GetAZs scalar",
+                                "!GetAZs mapping",
+                                "!GetAZs sequence",
+                                "!ImportValue mapping",
+                                "!ImportValue scalar",
+                                "!ImportValue sequence",
+                                "!Ref mapping",
+                                "!Ref scalar",
+                                "!Select scalar",
+                                "!Select mapping",
+                                "!Select sequence",
+                                "!Split scalar",
+                                "!Ref sequence",
+                                "!Sub mapping",
+                                "!Sub scalar",
+                                "!Sub sequence",
+                            },
                             schemaStore = {
                                 -- Must disable built-in schemaStore support to use
                                 -- schemas from SchemaStore.nvim plugin
