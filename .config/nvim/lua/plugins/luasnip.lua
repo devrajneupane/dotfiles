@@ -1,10 +1,8 @@
 return {
     "L3MON4D3/LuaSnip",
     build = "make install_jsregexp",
-    dependencies = {
-        { "benfowler/telescope-luasnip.nvim" },
-        { "rafamadriz/friendly-snippets" },
-    },
+    version = "v2.*",
+    dependencies = { "rafamadriz/friendly-snippets" },
     opts = {
         history = true,
         enable_autosnippets = true,
