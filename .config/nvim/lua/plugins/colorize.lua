@@ -1,38 +1,4 @@
 return {
-    -- Highlight and search todo comments
-    {
-        "folke/todo-comments.nvim",
-        cmd = { "TodoTrouble", "TodoTelescope" },
-        event = { "BufReadPost", "BufNewFile" },
-        opts = {
-            keywords = {
-                CHECK = { icon = "󰘽", color = "hint" },
-                HACK = { icon = " ", color = "warning" },
-                NOTE = { icon = "", color = "hint", alt = { "INFO" } },
-                PERF = { icon = "", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-                REF = { icon = "", color = "hint", alt = { "REFERENCE" } },
-                TEST = { icon = "", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
-            },
-            highlight = { multiline = false },
-        },
-        config = true,
-        keys = {
-            {
-                "]t",
-                function() require("todo-comments").jump_next() end,
-                desc = "todo comment",
-            },
-            {
-                "[t",
-                function() require("todo-comments").jump_prev() end,
-                desc = "todo comment",
-            },
-            { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "todo trouble" },
-            { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
-            { "<leader>xc", "<cmd>execute 'TodoTrouble cwd='.getreg('%')<cr>", desc = "todo current file" },
-            { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "find todo" },
-        },
-    },
 
     -- Color highlighter
     {
