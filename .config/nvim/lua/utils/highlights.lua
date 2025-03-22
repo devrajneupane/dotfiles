@@ -21,10 +21,16 @@ vim.api.nvim_create_autocmd({ "ColorScheme", "UIEnter" }, {
     callback = function()
         local hl = vim.api.nvim_get_hl(0, { name = "Normal" })
         local color = ("#%06x"):format(hl.bg)
+        local comment_hl = vim.api.nvim_get_hl(0, { name = "Comment" })
+        comment_hl.bold = true
+        comment_hl.italic = false
+        comment_hl.cterm.italic = false
         vim.schedule(function()
             pcall(vim.api.nvim_set_hl, 0, "TSDim", { fg = tint(color, 0.30) })
             vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { link = "TSDim" })
             vim.api.nvim_set_hl(0, "TreesitterContext", { link = "Normal" })
+            ---@diagnostic disable-next-line: param-type-mismatch
+            vim.api.nvim_set_hl(0, "@comment.bold", comment_hl)
         end)
     end,
 })
