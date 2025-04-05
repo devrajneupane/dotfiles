@@ -16,7 +16,9 @@ local function update_lightbulb(bufnr, line)
 
     vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
 
-    if not line then return end
+    if not line then
+        return
+    end
 
     pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, -1, {
         virt_text = { { " " .. lb_icon, "DiagnosticSignHint" } },
@@ -34,7 +36,7 @@ local function render(bufnr)
 
     local params = vim.lsp.util.make_range_params()
     params.context = {
-        diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr, line),
+        diagnostics = vim.lsp.diagnostic.from(vim.diagnostic.get(bufnr, { lnum = line })),
         triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Automatic,
     }
 
@@ -47,22 +49,23 @@ local function render(bufnr)
     end)
 end
 
-local uv = vim.uv or vim.loop
-local timer = assert(uv.new_timer())
+local timer = assert(vim.uv.new_timer())
 
 --- i didn't get it but assuming it waits for code action from LSP servers for given periods
 ---@param bufnr number
 local function update(bufnr)
     timer:stop()
     update_lightbulb(lb_buf)
-    timer:start(100, 0, function()
-        timer:stop()
-        vim.schedule(function()
+    timer:start(
+        100,
+        0,
+        vim.schedule_wrap(function()
+            timer:stop()
             if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_get_current_buf() == bufnr then
                 render(bufnr)
             end
         end)
-    end)
+    )
 end
 
 local augroup = vim.api.nvim_create_augroup(lb_name, { clear = true })
@@ -72,7 +75,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(opts)
         local client = vim.lsp.get_client_by_id(opts.data.client_id)
 
-        if not client or not client.supports_method("textDocument/codeAction") then
+        if not client or not client:supports_method("textDocument/codeAction") then
             return true
         end
 
@@ -86,18 +89,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
             group = group,
             desc = "update lightbulb when moving cursor",
             buffer = buf,
-            callback = function()
-                update(buf)
-            end,
+            callback = function() update(buf) end,
         })
 
         vim.api.nvim_create_autocmd({ "InsertEnter", "BufLeave" }, {
             group = group,
             desc = "update lightbulb when entering insert mode or leaving buffer",
             buffer = buf,
-            callback = function()
-                update_lightbulb(buf, nil)
-            end,
+            callback = function() update_lightbulb(buf, nil) end,
         })
     end,
 })
