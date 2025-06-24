@@ -42,6 +42,11 @@ super + x
 super + comma
 	dunstctl history-pop
 
+
+# Toggle screen grayscale
+super + t
+	${HOME}/.local/bin/toggle_grayscale.sh
+
 # SXHKD help
 super + shift + slash
     grep -A 1 '^#' ${HOME}/.config/sxhkd/sxhkdrc \
